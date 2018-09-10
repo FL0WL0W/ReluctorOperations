@@ -2,9 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\libs",
+    "\\libs\\CrankCamDecoders",
+    "\\libs\\CrankCamDecodersMockedObjects",
+    "\\libs\\CrankCamDecodersMockedObjects\\include",
     "\\libs\\CrankCamDecodersUnitTests",
-    "\\libs\\CrankCamDecodersUnitTests\\src"
+    "\\libs\\CrankCamDecodersUnitTests\\src",
+    "\\libs\\CrankCamDecoders\\include",
+    "\\libs\\CrankCamDecoders\\include\\CrankCamDecoders",
+    "\\libs\\EmbeddedIOServicesMockedObjects"
   ],
-  "SelectedNode": "\\libs\\CrankCamDecodersUnitTests\\src\\Gm24xDecoderTests.cpp",
+  "SelectedNode": "\\libs\\CrankCamDecodersMockedObjects\\include\\MockCrankCamDecoder.h",
   "PreviewInSolutionExplorer": false
 }

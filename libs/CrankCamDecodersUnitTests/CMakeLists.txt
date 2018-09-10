@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-set(TARGET		EmbeddedIOServicesUnitTests)
+set(TARGET		CrankCamDecodersUnitTests)
 
 project(${TARGET} CXX)
 
