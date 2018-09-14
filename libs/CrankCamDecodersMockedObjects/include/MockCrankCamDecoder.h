@@ -2,13 +2,13 @@
 
 #ifndef MOCKCRANKCAMDECODERSERVICE_H
 #define MOCKCRANKCAMDECODERSERVICE_H
-namespace HardwareAbstraction
+namespace CrankCamDecoders
 {
 	class MockCrankCamDecoder : public ICrankCamDecoder
 	{
 	public:
-		MOCK_METHOD0(GetCrankPosition, void());
-		MOCK_METHOD0(GetCamPosition, void());
+		MOCK_METHOD0(GetCrankPosition, float());
+		MOCK_METHOD0(GetCamPosition, float());
 		MOCK_METHOD0(GetTickPerDegree, unsigned int());
 		MOCK_METHOD0(GetRpm, unsigned short());
 		MOCK_METHOD1(CrankEdgeTrigger, void(EdgeTrigger));

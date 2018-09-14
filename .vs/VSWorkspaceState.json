@@ -5,12 +5,12 @@
     "\\libs\\CrankCamDecoders",
     "\\libs\\CrankCamDecodersMockedObjects",
     "\\libs\\CrankCamDecodersMockedObjects\\include",
-    "\\libs\\CrankCamDecodersUnitTests",
-    "\\libs\\CrankCamDecodersUnitTests\\src",
-    "\\libs\\CrankCamDecoders\\include",
-    "\\libs\\CrankCamDecoders\\include\\CrankCamDecoders",
-    "\\libs\\EmbeddedIOServicesMockedObjects"
+    "\\libs\\EmbeddedIOServices",
+    "\\libs\\EmbeddedIOServices\\include",
+    "\\libs\\EmbeddedIOServices\\include\\HardwareAbstraction",
+    "\\libs\\EmbeddedIOServices\\src",
+    "\\libs\\EmbeddedIOServices\\src\\HardwareAbstraction"
   ],
-  "SelectedNode": "\\libs\\CrankCamDecodersMockedObjects\\include\\MockCrankCamDecoder.h",
+  "SelectedNode": "\\libs\\EmbeddedIOServices\\include\\HardwareAbstraction\\ITimerService.h",
   "PreviewInSolutionExplorer": false
 }
