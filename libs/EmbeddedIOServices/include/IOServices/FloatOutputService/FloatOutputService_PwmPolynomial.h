@@ -30,7 +30,7 @@ namespace IOServices
 			return sizeof(FloatOutputService_PwmPolynomialConfig<Degree>);
 		}
 		
-		unsigned char PwmPin;
+		unsigned short PwmPin;
 		float A[Degree+1];
 		float MinDutyCycle;
 		float MaxDutyCycle;
@@ -66,6 +66,8 @@ namespace IOServices
 
 			_hardwareAbstractionCollection->PwmService->WritePin(_config->PwmPin, { 1.0f / _config->Frequency, pwmValue / _config->Frequency });
 		}
+
+		void Calibrate() { }
 	};
 }
 #endif

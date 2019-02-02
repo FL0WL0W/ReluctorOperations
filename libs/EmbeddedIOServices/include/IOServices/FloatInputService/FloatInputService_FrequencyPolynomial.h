@@ -30,7 +30,7 @@ namespace IOServices
 			return sizeof(FloatInputService_FrequencyPolynomialConfig<Degree>);
 		}
 		
-		unsigned char PwmPin;
+		unsigned short PwmPin;
 		unsigned short MinFrequency;
 		float A[Degree + 1];
 		float MinValue;
@@ -75,7 +75,7 @@ namespace IOServices
 				Value = _config->MaxValue;
 
 			float elapsedTime = _hardwareAbstractionCollection->TimerService->GetElapsedTime(_lastReadTick);
-			if (elapsedTime < 1.0 / _config->DotSampleRate)
+			if (elapsedTime * _config->DotSampleRate < 1.0)
 				return;
 
 			_lastReadTick = _hardwareAbstractionCollection->TimerService->GetTick();

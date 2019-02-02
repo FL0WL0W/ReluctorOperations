@@ -10,8 +10,9 @@ namespace IOServices
 	{
 	public:
 		virtual void SetOutput(float output) = 0;
+		virtual void Calibrate() = 0;
 		
-		static IFloatOutputService* CreateFloatOutputService(const HardwareAbstractionCollection *hardwareAbstractionCollection, void *config, unsigned int *size);
+		static IFloatOutputService* CreateFloatOutputService(const HardwareAbstractionCollection *hardwareAbstractionCollection, void *config, unsigned int *sizeOut);
 	};
 }
 #endif
