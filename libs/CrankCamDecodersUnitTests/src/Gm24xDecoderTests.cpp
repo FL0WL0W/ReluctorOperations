@@ -2,6 +2,8 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "MockTimerService.h"
+#include "MockDigitalService.h"
+#include "HardwareAbstraction/HardwareAbstractionCollection.h"
 #include "CrankCamDecoders/ICrankCamDecoder.h"
 #include "CrankCamDecoders/Gm24xDecoder.h"
 using ::testing::AtLeast;
@@ -13,8 +15,13 @@ namespace UnitTests
 {	
 	TEST(GM24XDECODER, WhenCrankTriggerImmediatelyAfterCamTriggerCrankPositionIsCorrect)
 	{
+		HardwareAbstraction::HardwareAbstractionCollection collection;
 		HardwareAbstraction::MockTimerService timerService;
-		Gm24xDecoder *decoder = new Gm24xDecoder(&timerService);
+		HardwareAbstraction::MockDigitalService digitalService;
+		collection.TimerService = &timerService;
+		collection.DigitalService = &digitalService;
+		Gm24xDecoderConfig config;
+		Gm24xDecoder *decoder = new Gm24xDecoder(&collection, &config);
 		EXPECT_CALL(timerService, GetTicksPerSecond())
 			.Times(AtLeast(1))
 			.WillRepeatedly(Return(500000));
@@ -56,8 +63,13 @@ namespace UnitTests
 
 	TEST(GM24XDECODER, WhenCrankTriggerImmediatelyBeforeCamTriggerCrankPositionIsCorrect)
 	{
+		HardwareAbstraction::HardwareAbstractionCollection collection;
 		HardwareAbstraction::MockTimerService timerService;
-		Gm24xDecoder *decoder = new Gm24xDecoder(&timerService);
+		HardwareAbstraction::MockDigitalService digitalService;
+		collection.TimerService = &timerService;
+		collection.DigitalService = &digitalService;
+		Gm24xDecoderConfig config;
+		Gm24xDecoder *decoder = new Gm24xDecoder(&collection, &config);
 		EXPECT_CALL(timerService, GetTicksPerSecond())
 			.Times(AtLeast(1))
 			.WillRepeatedly(Return(1000000));
@@ -99,8 +111,13 @@ namespace UnitTests
 
 	TEST(GM24XDECODER, SyncedReturnsTrueWhenCamTicked)
 	{
+		HardwareAbstraction::HardwareAbstractionCollection collection;
 		HardwareAbstraction::MockTimerService timerService;
-		Gm24xDecoder *decoder = new Gm24xDecoder(&timerService);
+		HardwareAbstraction::MockDigitalService digitalService;
+		collection.TimerService = &timerService;
+		collection.DigitalService = &digitalService;
+		Gm24xDecoderConfig config;
+		Gm24xDecoder *decoder = new Gm24xDecoder(&collection, &config);
 
 		ASSERT_FALSE(decoder->IsSynced());
 
@@ -108,7 +125,7 @@ namespace UnitTests
 
 		ASSERT_TRUE(decoder->IsSynced());
 
-		decoder = new Gm24xDecoder(&timerService);
+		decoder = new Gm24xDecoder(&collection, &config);
 
 		ASSERT_FALSE(decoder->IsSynced());
 
@@ -119,8 +136,13 @@ namespace UnitTests
 
 	TEST(GM24XDECODER, HasCamPositionReturnsFalseWhenCamNotTicked)
 	{
+		HardwareAbstraction::HardwareAbstractionCollection collection;
 		HardwareAbstraction::MockTimerService timerService;
-		Gm24xDecoder *decoder = new Gm24xDecoder(&timerService);
+		HardwareAbstraction::MockDigitalService digitalService;
+		collection.TimerService = &timerService;
+		collection.DigitalService = &digitalService;
+		Gm24xDecoderConfig config;
+		Gm24xDecoder *decoder = new Gm24xDecoder(&collection, &config);
 
 		ASSERT_FALSE(decoder->IsSynced());
 		ASSERT_TRUE(decoder->HasCamPosition());
@@ -160,8 +182,13 @@ namespace UnitTests
 
 	TEST(GM24XDECODER, SyncedReturnsTrueAfterCrankVerificationWhenCamNotTicked)
 	{
+		HardwareAbstraction::HardwareAbstractionCollection collection;
 		HardwareAbstraction::MockTimerService timerService;
-		Gm24xDecoder *decoder = new Gm24xDecoder(&timerService);
+		HardwareAbstraction::MockDigitalService digitalService;
+		collection.TimerService = &timerService;
+		collection.DigitalService = &digitalService;
+		Gm24xDecoderConfig config;
+		Gm24xDecoder *decoder = new Gm24xDecoder(&collection, &config);
 
 		ASSERT_FALSE(decoder->IsSynced());
 		ASSERT_TRUE(decoder->HasCamPosition());
