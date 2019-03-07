@@ -1,7 +1,7 @@
 #include "Reluctor/IReluctor.h"
 
-#ifndef MOCKRELUCTORSERVICE_H
-#define MOCKRELUCTORSERVICE_H
+#ifndef MOCKRELUCTOR_H
+#define MOCKRELUCTOR_H
 namespace Reluctor
 {
 	class MockReluctor : public IReluctor
