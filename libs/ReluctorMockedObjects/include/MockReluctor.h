@@ -10,7 +10,7 @@ namespace Reluctor
 		MOCK_METHOD0(GetPosition, float());
 		MOCK_METHOD0(GetTickPerDegree, uint32_t());
 		MOCK_METHOD0(GetRpm, uint16_t());
-		MOCK_METHOD0(GetRpm, GetResolution());
+		MOCK_METHOD0(GetResolution, uint16_t());
 		MOCK_METHOD0(IsSynced, bool());
 	};
 }
