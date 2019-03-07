@@ -3,15 +3,15 @@
 #include "gtest/gtest.h"
 #include "MockTimerService.h"
 #include "MockDigitalService.h"
-#include "CrankCamDecoders/Gm24xDecoder.h"
+#include "Decoder/Gm24xDecoder.h"
 using ::testing::AtLeast;
 using ::testing::Return;
 
-using namespace CrankCamDecoders;
+using namespace Decoder;
 
 namespace UnitTests
 {	
-	TEST(GM24XDECODER, SyncedReturnsTrueAfterCrankVerification)
+	TEST(GM24XDECODER, SyncedReturnsTrueAfterVerification)
 	{
 		HardwareAbstraction::HardwareAbstractionCollection collection;
 		HardwareAbstraction::MockTimerService timerService;

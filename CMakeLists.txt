@@ -8,11 +8,11 @@ set(LIBRARIES	libs)
 
 project(TopLevelBuild CXX)
 
-add_subdirectory (${LIBRARIES}/CrankCamDecoders)
+add_subdirectory (${LIBRARIES}/Decoder)
 add_subdirectory (${LIBRARIES}/EmbeddedIOServices)
 
 add_subdirectory (${LIBRARIES}/googletest)
 enable_testing()
 
 add_subdirectory (${LIBRARIES}/EmbeddedIOServicesMockedObjects)
-add_subdirectory (${LIBRARIES}/CrankCamDecodersUnitTests)
+add_subdirectory (${LIBRARIES}/DecoderUnitTests)

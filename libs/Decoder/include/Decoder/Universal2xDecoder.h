@@ -1,4 +1,4 @@
-#include "CrankCamDecoders/ICrankCamDecoder.h"
+#include "Decoder/IDecoder.h"
 #include "HardwareAbstraction/ICallBack.h"
 #include "HardwareAbstraction/HardwareAbstractionCollection.h"
 #include "stdint.h"
@@ -7,7 +7,7 @@
 
 #ifndef UNIVERSAL2XDECODER_H
 #define UNIVERSAL2XDECODER_H
-namespace CrankCamDecoders
+namespace Decoder
 {
 	PACK(
 	struct Universal2xDecoderConfig {
@@ -21,7 +21,7 @@ namespace CrankCamDecoders
 		float FallingPosition;
 	});
 
-	class Universal2xDecoder : public ICrankCamDecoder
+	class Universal2xDecoder : public IDecoder
 	{
 	protected:
 		const HardwareAbstraction::HardwareAbstractionCollection *_hardwareAbstractionCollection;

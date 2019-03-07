@@ -1,7 +1,7 @@
 #include <stdint.h>
-#include "CrankCamDecoders/Gm24xDecoder.h"
+#include "Decoder/Gm24xDecoder.h"
 
-namespace CrankCamDecoders
+namespace Decoder
 {
 	Gm24xDecoder::Gm24xDecoder(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const uint16_t pin)
 	{
@@ -74,13 +74,13 @@ namespace CrankCamDecoders
 		}
 		else if(_period != 0)
 		{
-			uint32_t interumCrankPeriod;
+			uint32_t interumPeriod;
 			if (tick < _lastTick)
-				interumCrankPeriod = tick + (4294967295 - _lastTick);
+				interumPeriod = tick + (4294967295 - _lastTick);
 			else
-				interumCrankPeriod = tick - _lastTick;
+				interumPeriod = tick - _lastTick;
 			
-			if (interumCrankPeriod > _period * 0.6)
+			if (interumPeriod > _period * 0.6)
 			{
 				//short pulse
 				//    _

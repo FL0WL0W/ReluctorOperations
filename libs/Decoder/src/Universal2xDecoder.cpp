@@ -1,7 +1,7 @@
 #include <stdint.h>
-#include "CrankCamDecoders/Universal2xDecoder.h"
+#include "Decoder/Universal2xDecoder.h"
 
-namespace CrankCamDecoders
+namespace Decoder
 {
 	Universal2xDecoder::Universal2xDecoder(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const Universal2xDecoderConfig *config)
 	{

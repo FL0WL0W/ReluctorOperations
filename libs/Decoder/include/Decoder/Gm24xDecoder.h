@@ -1,4 +1,4 @@
-#include "CrankCamDecoders/ICrankCamDecoder.h"
+#include "Decoder/IDecoder.h"
 #include "HardwareAbstraction/ICallBack.h"
 #include "HardwareAbstraction/HardwareAbstractionCollection.h"
 #include "stdint.h"
@@ -6,9 +6,9 @@
 
 #ifndef GM24XDECODER_H
 #define GM24XDECODER_H
-namespace CrankCamDecoders
+namespace Decoder
 {
-	class Gm24xDecoder : public ICrankCamDecoder
+	class Gm24xDecoder : public IDecoder
 	{
 	protected:
 		const HardwareAbstraction::HardwareAbstractionCollection *_hardwareAbstractionCollection;

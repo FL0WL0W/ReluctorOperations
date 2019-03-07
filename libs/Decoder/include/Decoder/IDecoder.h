@@ -1,10 +1,10 @@
 #include "stdint.h"
 
-#ifndef ICRANKCAMDECODER_H
-#define ICRANKCAMDECODER_H
-namespace CrankCamDecoders
+#ifndef DECODER_H
+#define DECODER_H
+namespace Decoder
 {	
-	class ICrankCamDecoder
+	class IDecoder
 	{
 	public:
 		virtual float GetPosition() = 0;
