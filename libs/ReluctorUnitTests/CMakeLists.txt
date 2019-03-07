@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-set(TARGET		DecoderUnitTests)
+set(TARGET		ReluctorUnitTests)
 
 project(${TARGET} CXX)
 
@@ -21,7 +21,7 @@ add_executable(${TARGET} ${SRCS})
 # link static libraries
 target_link_libraries(${TARGET} EmbeddedIOServices)
 target_link_libraries(${TARGET} EmbeddedIOServicesMockedObjects)
-target_link_libraries(${TARGET} Decoder)
+target_link_libraries(${TARGET} Reluctor)
 target_link_libraries(${TARGET} gtest gtest_main gmock)
 
 add_test(ALLTESTS ${TARGET})

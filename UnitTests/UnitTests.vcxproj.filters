@@ -32,7 +32,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gm24xDecoderTests.cpp">
+    <ClCompile Include="Gm24xReluctorTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="gmock_initialize.cpp">

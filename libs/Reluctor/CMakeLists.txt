@@ -1,9 +1,9 @@
-﻿# CMakeList.txt : CMake project for Decoder, include source and define
+﻿# CMakeList.txt : CMake project for Reluctor, include source and define
 # project specific logic here.
 #
 cmake_minimum_required (VERSION 3.8)
 
-set(TARGET		Decoder)
+set(TARGET		Reluctor)
 set(HDR_DIR		include)
 set(SRCS_DIR	src)
 set(LIBRARIES	libs)

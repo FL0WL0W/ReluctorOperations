@@ -1,9 +1,9 @@
 #include <stdint.h>
-#include "Decoder/Gm24xDecoder.h"
+#include "Reluctor/Gm24xReluctor.h"
 
-namespace Decoder
+namespace Reluctor
 {
-	Gm24xDecoder::Gm24xDecoder(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const uint16_t pin)
+	Gm24xReluctor::Gm24xReluctor(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const uint16_t pin)
 	{
 		_hardwareAbstractionCollection = hardwareAbstractionCollection;
 		_pin = pin;
@@ -15,7 +15,7 @@ namespace Decoder
 		_subState = 0;
 	}
 	
-	const uint32_t Gm24xDecoder::time() const
+	const uint32_t Gm24xReluctor::time() const
 	{
 		uint32_t tick = _hardwareAbstractionCollection->TimerService->GetTick();
 		if (tick < _lastTick)
@@ -23,37 +23,37 @@ namespace Decoder
 		return tick - _lastTick;
 	}
 	
-	float Gm24xDecoder::GetPosition(void)
+	float Gm24xReluctor::GetPosition(void)
 	{
 		return _state * 15 + (time() * 15) / static_cast<float>(_period);
 	}
 	
-	uint32_t Gm24xDecoder::GetTickPerDegree(void)
+	uint32_t Gm24xReluctor::GetTickPerDegree(void)
 	{
 		return _period / 15;
 	}
 	
-	uint16_t Gm24xDecoder::GetRpm(void)
+	uint16_t Gm24xReluctor::GetRpm(void)
 	{
 		return ((60 * _hardwareAbstractionCollection->TimerService->GetTicksPerSecond()) / 24) / _period;
 	}
 		
-	uint16_t Gm24xDecoder::GetResolution()
+	uint16_t Gm24xReluctor::GetResolution()
 	{
 		return 24;
 	}
 
-	bool Gm24xDecoder::IsSynced()
+	bool Gm24xReluctor::IsSynced()
 	{
 		return _isSynced;
 	}
 
-	void Gm24xDecoder::InterruptCallBack(void *decoder)
+	void Gm24xReluctor::InterruptCallBack(void *reluctor)
 	{
-		reinterpret_cast<Gm24xDecoder *>(decoder)->Interrupt();
+		reinterpret_cast<Gm24xReluctor *>(reluctor)->Interrupt();
 	}
 
-	void Gm24xDecoder::Interrupt()
+	void Gm24xReluctor::Interrupt()
 	{
 		bool rising = _hardwareAbstractionCollection->DigitalService->ReadPin(_pin);
 

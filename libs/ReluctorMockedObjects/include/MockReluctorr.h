@@ -1,10 +1,10 @@
-#include "Decoder/IDecoder.h"
+#include "Reluctor/IReluctor.h"
 
-#ifndef MOCKDECODERSERVICE_H
-#define MOCKDECODERSERVICE_H
-namespace Decoder
+#ifndef MOCKRELUCTORSERVICE_H
+#define MOCKRELUCTORSERVICE_H
+namespace Reluctor
 {
-	class MockDecoder : public IDecoder
+	class MockReluctor : public IReluctor
 	{
 	public:
 		MOCK_METHOD0(GetPosition, float());

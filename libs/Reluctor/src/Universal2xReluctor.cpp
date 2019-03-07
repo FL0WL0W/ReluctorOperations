@@ -1,9 +1,9 @@
 #include <stdint.h>
-#include "Decoder/Universal2xDecoder.h"
+#include "Reluctor/Universal2xReluctor.h"
 
-namespace Decoder
+namespace Reluctor
 {
-	Universal2xDecoder::Universal2xDecoder(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const Universal2xDecoderConfig *config)
+	Universal2xReluctor::Universal2xReluctor(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const Universal2xReluctorConfig *config)
 	{
 		_hardwareAbstractionCollection = hardwareAbstractionCollection;
 		_config = config;
@@ -14,7 +14,7 @@ namespace Decoder
 		_state	  = false;
 	}
 	
-	const unsigned int Universal2xDecoder::time() const
+	const unsigned int Universal2xReluctor::time() const
 	{
 		unsigned int tick = _hardwareAbstractionCollection->TimerService->GetTick();
 		if (tick < _lastTick)
@@ -22,37 +22,37 @@ namespace Decoder
 		return tick - _lastTick;
 	}
 	
-	float Universal2xDecoder::GetPosition(void)
+	float Universal2xReluctor::GetPosition(void)
 	{
 		return (_state? + _config->RisingPosition : _config->FallingPosition) + time() / static_cast<float>(_period);
 	}
 	
-	uint32_t Universal2xDecoder::GetTickPerDegree(void)
+	uint32_t Universal2xReluctor::GetTickPerDegree(void)
 	{
 		return _period / 360;
 	}
 	
-	uint16_t Universal2xDecoder::GetRpm(void)
+	uint16_t Universal2xReluctor::GetRpm(void)
 	{
 		return (60 * _hardwareAbstractionCollection->TimerService->GetTicksPerSecond()) / _period;
 	}
 		
-	uint16_t Universal2xDecoder::GetResolution()
+	uint16_t Universal2xReluctor::GetResolution()
 	{
 		return 2;
 	}
 
-	bool Universal2xDecoder::IsSynced()
+	bool Universal2xReluctor::IsSynced()
 	{
 		return _period != 0;
 	}
 
-	void Universal2xDecoder::InterruptCallBack(void *decoder)
+	void Universal2xReluctor::InterruptCallBack(void *reluctor)
 	{
-		reinterpret_cast<Universal2xDecoder *>(decoder)->Interrupt();
+		reinterpret_cast<Universal2xReluctor *>(reluctor)->Interrupt();
 	}
 
-	void Universal2xDecoder::Interrupt()
+	void Universal2xReluctor::Interrupt()
 	{
 		_state = _hardwareAbstractionCollection->DigitalService->ReadPin(_config->Pin);
 

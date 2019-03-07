@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-set(TARGET		DecoderMockedObjects)
+set(TARGET		ReluctorMockedObjects)
 
 project(${TARGET} CXX)
 

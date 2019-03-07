@@ -1,10 +1,10 @@
 #include "stdint.h"
 
-#ifndef DECODER_H
-#define DECODER_H
-namespace Decoder
+#ifndef RELUCTOR_H
+#define RELUCTOR_H
+namespace Reluctor
 {	
-	class IDecoder
+	class IReluctor
 	{
 	public:
 		virtual float GetPosition() = 0;
