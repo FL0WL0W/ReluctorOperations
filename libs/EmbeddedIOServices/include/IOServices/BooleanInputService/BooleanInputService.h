@@ -9,24 +9,13 @@ namespace IOServices
 	PACK(
 	struct BooleanInputServiceConfig
 	{
-	private:
-		BooleanInputServiceConfig()
-		{
-
-		}
-		
 	public:
-		static BooleanInputServiceConfig* Cast(void *p)
-		{
-			return (BooleanInputServiceConfig *)p;
-		}
-		
-		unsigned int Size()
+		constexpr const unsigned int Size() const
 		{
 			return sizeof(BooleanInputServiceConfig);
 		}
 
-		unsigned short Pin;
+		uint16_t Pin;
 		bool Inverted;
 	});
 
@@ -34,11 +23,11 @@ namespace IOServices
 	{
 	protected:
 		const HardwareAbstraction::HardwareAbstractionCollection *_hardwareAbstractionCollection;
-		BooleanInputServiceConfig *_config;
+		const BooleanInputServiceConfig *_config;
 		
 	public:
-		BooleanInputService(const HardwareAbstraction::HardwareAbstractionCollection *, BooleanInputServiceConfig *);
-		void ReadValue();
+		BooleanInputService(const HardwareAbstraction::HardwareAbstractionCollection *, const BooleanInputServiceConfig *);
+		void ReadValue() override;
 	};
 }
 #endif

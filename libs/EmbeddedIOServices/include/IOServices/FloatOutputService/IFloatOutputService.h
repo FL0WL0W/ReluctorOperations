@@ -2,7 +2,7 @@
 
 using namespace HardwareAbstraction;
 
-#ifndef IFLOATOUTPUTSERVICE_H
+#if !defined(IFLOATOUTPUTSERVICE_H) && defined(HARDWAREABSTRACTIONCOLLECTION_H)
 #define IFLOATOUTPUTSERVICE_H
 namespace IOServices
 {
@@ -12,7 +12,7 @@ namespace IOServices
 		virtual void SetOutput(float output) = 0;
 		virtual void Calibrate() = 0;
 		
-		static IFloatOutputService* CreateFloatOutputService(const HardwareAbstractionCollection *hardwareAbstractionCollection, void *config, unsigned int *sizeOut);
+		static IFloatOutputService* CreateFloatOutputService(const HardwareAbstractionCollection *hardwareAbstractionCollection, const void *config, unsigned int *sizeOut);
 	};
 }
 #endif

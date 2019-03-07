@@ -2,7 +2,7 @@
 
 using namespace HardwareAbstraction;
 
-#ifndef IFLOATINPUTSERVICE_H
+#if !defined(IFLOATINPUTSERVICE_H) && defined(HARDWAREABSTRACTIONCOLLECTION_H)
 #define IFLOATINPUTSERVICE_H
 namespace IOServices
 {
@@ -15,7 +15,7 @@ namespace IOServices
 
 		static void ReadValueCallBack(void *floatInputService);
 
-		static IFloatInputService* CreateFloatInputService(const HardwareAbstractionCollection *hardwareAbstractionCollection, void *config, unsigned int *sizeOut);
+		static IFloatInputService* CreateFloatInputService(const HardwareAbstractionCollection *hardwareAbstractionCollection, const void *config, unsigned int *sizeOut);
 	};
 }
 #endif

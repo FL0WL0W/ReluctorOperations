@@ -5,39 +5,28 @@
 
 using namespace HardwareAbstraction;
 
-#if !defined(FLOATOUTPUTSERVICE_PWMPOLYNOMIAL_H) && defined(IFLOATOUTPUTSERVICE_H)
+#if !defined(FLOATOUTPUTSERVICE_PWMPOLYNOMIAL_H) && defined(IFLOATOUTPUTSERVICE_H) && defined(HARDWAREABSTRACTIONCOLLECTION_H)
 #define FLOATOUTPUTSERVICE_PWMPOLYNOMIAL_H
 namespace IOServices
 {
 	PACK(
-	template<unsigned char Degree>
+	template<uint8_t Degree>
 	struct FloatOutputService_PwmPolynomialConfig
 	{
-	private:
-		FloatOutputService_PwmPolynomialConfig()
-		{
-			
-		}
-		
 	public:
-		static FloatOutputService_PwmPolynomialConfig* Cast(void *p)
-		{
-			return (FloatOutputService_PwmPolynomialConfig *)p;
-		}
-			
-		unsigned int Size()
+		constexpr const unsigned int Size() const
 		{
 			return sizeof(FloatOutputService_PwmPolynomialConfig<Degree>);
 		}
 		
-		unsigned short PwmPin;
+		uint16_t PwmPin;
+		uint16_t Frequency;
 		float A[Degree+1];
 		float MinDutyCycle;
 		float MaxDutyCycle;
-		unsigned short Frequency;
 	});
 
-	template<unsigned char Degree>
+	template<uint8_t Degree>
 	class FloatOutputService_PwmPolynomial : public IFloatOutputService
 	{
 	protected:
@@ -53,11 +42,11 @@ namespace IOServices
 			_hardwareAbstractionCollection->PwmService->InitPin(_config->PwmPin, HardwareAbstraction::Out, _config->Frequency);
 		}
 		
-		void SetOutput(float value)
+		void SetOutput(float value) override
 		{
 			float pwmValue = _config->A[0];
-			for (int i = 1; i <= Degree; i++)
-				pwmValue += _config->A[i] * pow(value, i);
+			for (uint8_t i = 1; i <= Degree; i++)
+				pwmValue += _config->A[i] * powf(value, i);
 
 			if (pwmValue > _config->MaxDutyCycle)
 				pwmValue = _config->MaxDutyCycle;
@@ -67,7 +56,7 @@ namespace IOServices
 			_hardwareAbstractionCollection->PwmService->WritePin(_config->PwmPin, { 1.0f / _config->Frequency, pwmValue / _config->Frequency });
 		}
 
-		void Calibrate() { }
+		void Calibrate() override { }
 	};
 }
 #endif

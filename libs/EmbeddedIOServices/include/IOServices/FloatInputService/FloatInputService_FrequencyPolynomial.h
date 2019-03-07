@@ -10,42 +10,31 @@ using namespace HardwareAbstraction;
 namespace IOServices
 {
 	PACK(
-	template<unsigned char Degree>
+	template<uint8_t Degree>
 	struct FloatInputService_FrequencyPolynomialConfig
 	{
-	private:
-		FloatInputService_FrequencyPolynomialConfig()
-		{
-			
-		}
-		
 	public:
-		static FloatInputService_FrequencyPolynomialConfig<Degree>* Cast(void *p)
-		{
-			return (FloatInputService_FrequencyPolynomialConfig<Degree> *)p;
-		}
-		
-		unsigned int Size()
+		constexpr const unsigned int Size() const
 		{
 			return sizeof(FloatInputService_FrequencyPolynomialConfig<Degree>);
 		}
 		
-		unsigned short PwmPin;
-		unsigned short MinFrequency;
+		uint16_t PwmPin;
+		uint16_t MinFrequency;
+		uint16_t DotSampleRate;
 		float A[Degree + 1];
 		float MinValue;
 		float MaxValue;
-		unsigned short DotSampleRate;
 	});
 
-	template<unsigned char Degree>
+	template<uint8_t Degree>
 	class FloatInputService_FrequencyPolynomial : public IFloatInputService
 	{
 	protected:
 		const HardwareAbstractionCollection *_hardwareAbstractionCollection;
 		const FloatInputService_FrequencyPolynomialConfig<Degree> *_config;
 
-		unsigned int _lastReadTick = 0;
+		uint32_t _lastReadTick = 0;
 		float _lastValue = 0;
 		
 	public:
@@ -57,7 +46,7 @@ namespace IOServices
 			_hardwareAbstractionCollection->PwmService->InitPin(_config->PwmPin, HardwareAbstraction::In, _config->MinFrequency);
 		}
 
-		void ReadValue()
+		void ReadValue() override
 		{
 			HardwareAbstraction::PwmValue pwmValue = _hardwareAbstractionCollection->PwmService->ReadPin(_config->PwmPin);
 
@@ -67,8 +56,8 @@ namespace IOServices
 			float frequency = 1 / pwmValue.Period;
 
 			Value = _config->A[0];
-			for (int i = 1; i <= Degree; i++)
-				Value += _config->A[i] * pow(frequency, i);
+			for (uint8_t i = 1; i <= Degree; i++)
+				Value += _config->A[i] * powf(frequency, i);
 			if (Value < _config->MinValue)
 				Value = _config->MinValue;
 			else if (Value > _config->MaxValue)

@@ -19,28 +19,20 @@ namespace IOServices
 			
 		}
 		
-	public:
-		static FloatInputService_AnalogInterpolatedTableConfig* Cast(void *p)
-		{
-			FloatInputService_AnalogInterpolatedTableConfig *ret = (FloatInputService_AnalogInterpolatedTableConfig *)p;
-
-			ret->Table = (float *)(ret + 1);
-
-			return ret;
-		}
-		
-		unsigned int Size()
+	public:		
+		constexpr const unsigned int Size() const
 		{
 			return sizeof(FloatInputService_AnalogInterpolatedTableConfig) +
 				(sizeof(float) * Resolution);
 		}
+
+		constexpr const float *Table() const { return reinterpret_cast<const float *>(this + 1); }
 		
-		unsigned short AdcPin;
+		uint16_t AdcPin;
+		uint16_t DotSampleRate;
 		float MinInputValue;
 		float MaxInputValue;
-		unsigned short DotSampleRate;
-		unsigned char Resolution;
-		float *Table;
+		uint8_t Resolution;
 	});
 	
 	class FloatInputService_AnalogInterpolatedTable : public IFloatInputService
@@ -49,13 +41,13 @@ namespace IOServices
 		const HardwareAbstractionCollection *_hardwareAbstractionCollection;
 		const FloatInputService_AnalogInterpolatedTableConfig *_config;
 		
-		unsigned int _lastReadTick = 0;
+		uint32_t _lastReadTick = 0;
 		float _lastValue = 0;
 		
 	public:
 		FloatInputService_AnalogInterpolatedTable(const HardwareAbstractionCollection *hardwareAbstractionCollection, const FloatInputService_AnalogInterpolatedTableConfig *config);
 
-		void ReadValue();
+		void ReadValue() override;
 	};
 }
 #endif

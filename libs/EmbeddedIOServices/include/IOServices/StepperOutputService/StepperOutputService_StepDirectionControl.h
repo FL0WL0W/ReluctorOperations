@@ -1,34 +1,23 @@
 #include "IOServices/StepperOutputService/IStepperOutputService.h"
 #include "IOServices/BooleanOutputService/IBooleanOutputService.h"
 #include "Packed.h"
+#include "math.h"
 
-#if !defined(STEPPEROUTPUTSERVICE_STEPDIRECTIONCONTROL_H) && defined(ISTEPPEROUTPUTSERVICE_H)
+#if !defined(STEPPEROUTPUTSERVICE_STEPDIRECTIONCONTROL_H) && defined(ISTEPPEROUTPUTSERVICE_H) && defined(HARDWAREABSTRACTIONCOLLECTION_H)
 #define STEPPEROUTPUTSERVICE_STEPDIRECTIONCONTROL_H
-
 namespace IOServices
 {
 	PACK(
 	struct StepperOutputService_StepDirectionControlConfig
 	{
-	private:
-		StepperOutputService_StepDirectionControlConfig()
-		{
-			
-		}
-		
 	public:
-		static StepperOutputService_StepDirectionControlConfig* Cast(void *p)
-		{
-			return (StepperOutputService_StepDirectionControlConfig *)p;
-		}
-			
-		unsigned int Size()
+		constexpr const unsigned int Size() const
 		{
 			return sizeof(StepperOutputService_StepDirectionControlConfig);
 		}
 		
-		unsigned int MaxStepsPerSecond;
-		unsigned float StepWidth;
+		uint16_t MaxStepsPerSecond;
+		float StepWidth;
 	});
 
 	class StepperOutputService_StepDirectionControl : public IStepperOutputService
@@ -38,7 +27,7 @@ namespace IOServices
 		const StepperOutputService_StepDirectionControlConfig *_config;
 		IBooleanOutputService *_stepBooleanOutputService;
 		IBooleanOutputService *_directionBooleanOutputService;
-		int _stepQueue = 0;
+		int32_t _stepQueue = 0;
 		Task *_offTask;
 		Task *_stepTask;
 		static void StepCallBack(void *stepperOutputService_StepDirectionControl);
@@ -46,9 +35,8 @@ namespace IOServices
 
 	public:
 		StepperOutputService_StepDirectionControl(const HardwareAbstractionCollection *hardwareAbstractionCollection, const StepperOutputService_StepDirectionControlConfig *config, IBooleanOutputService *stepBooleanOutputService, IBooleanOutputService *directionBooleanOutputService);
-		void Step(int steps);
-		void Calibrate();
+		void Step(int32_t steps) override;
+		void Calibrate() override;
 	};
 }
-
 #endif

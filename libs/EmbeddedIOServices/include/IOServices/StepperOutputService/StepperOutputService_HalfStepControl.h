@@ -2,33 +2,21 @@
 #include "IOServices/BooleanOutputService/IBooleanOutputService.h"
 #include "Packed.h"
 
-#if !defined(STEPPEROUTPUTSERVICE_HALFSTEPCONTROL_H) && defined(ISTEPPEROUTPUTSERVICE_H)
+#if !defined(STEPPEROUTPUTSERVICE_HALFSTEPCONTROL_H) && defined(ISTEPPEROUTPUTSERVICE_H) && defined(HARDWAREABSTRACTIONCOLLECTION_H)
 #define STEPPEROUTPUTSERVICE_HALFSTEPCONTROL_H
-
 namespace IOServices
 {
 	PACK(
 	struct StepperOutputService_HalfStepControlConfig
 	{
-	private:
-		StepperOutputService_HalfStepControlConfig()
-		{
-			
-		}
-		
 	public:
-		static StepperOutputService_HalfStepControlConfig* Cast(void *p)
-		{
-			return (StepperOutputService_HalfStepControlConfig *)p;
-		}
-			
-		unsigned int Size()
+		constexpr const unsigned int Size() const
 		{
 			return sizeof(StepperOutputService_HalfStepControlConfig);
 		}
 		
-		unsigned int MaxStepsPerSecond;
-		unsigned float StepWidth;
+		uint16_t MaxStepsPerSecond;
+		float StepWidth;
 	});
 
 	class StepperOutputService_HalfStepControl : public IStepperOutputService
@@ -40,18 +28,17 @@ namespace IOServices
 		IBooleanOutputService *_coilAMinusBooleanOutputService;
 		IBooleanOutputService *_coilBPlusBooleanOutputService;
 		IBooleanOutputService *_coilBMinusBooleanOutputService;
-		int _stepQueue = 0;
-		unsigned char _state;
+		int32_t _stepQueue = 0;
+		int8_t _state;
 		Task *_stepTask;
-		static void StepCallBack(void *stepperOutputService_StepDirectionControl);
+		static void StepCallBack(void *stepperOutputService_HalfStepControl);
 		void Step();
-		void SetState(unsigned char state);
+		void SetState(int8_t state);
 
 	public:
 		StepperOutputService_HalfStepControl(const HardwareAbstractionCollection *hardwareAbstractionCollection, const StepperOutputService_HalfStepControlConfig *config, IBooleanOutputService *coilAPlusBooleanOutputService, IBooleanOutputService *coilAMinusBooleanOutputService, IBooleanOutputService *coilBPlusBooleanOutputService, IBooleanOutputService *coilBMinusBooleanOutputService);
-		void Step(int steps);
-		void Calibrate();
+		void Step(int32_t steps) override;
+		void Calibrate() override;
 	};
 }
-
 #endif

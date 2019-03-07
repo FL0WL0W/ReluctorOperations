@@ -8,19 +8,8 @@ namespace IOServices
 	PACK(
 	struct FloatInputService_FaultDetectionWrapperConfig
 	{
-	private:
-		FloatInputService_FaultDetectionWrapperConfig()
-		{
-			
-		}
-		
 	public:
-		static FloatInputService_FaultDetectionWrapperConfig* Cast(void *p)
-		{
-			return (FloatInputService_FaultDetectionWrapperConfig *)p;
-		}
-		
-		unsigned int Size()
+		constexpr const unsigned int Size() const
 		{
 			return sizeof(FloatInputService_FaultDetectionWrapperConfig);
 		}
@@ -38,7 +27,7 @@ namespace IOServices
 	public:
 		FloatInputService_FaultDetectionWrapper(const FloatInputService_FaultDetectionWrapperConfig *config, IFloatInputService *child);
 
-		void ReadValue();
+		void ReadValue() override;
 	};
 }
 #endif

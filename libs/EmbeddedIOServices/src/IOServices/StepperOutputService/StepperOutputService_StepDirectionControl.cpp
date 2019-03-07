@@ -3,9 +3,9 @@
 #ifdef STEPPEROUTPUTSERVICE_STEPDIRECTIONCONTROL_H
 namespace IOServices
 {
-	void StepperOutputService_StepDirectionControl::StepCallBack(void *parameters)
+	void StepperOutputService_StepDirectionControl::StepCallBack(void *stepperOutputService_StepDirectionControl)
 	{
-		((StepperOutputService_StepDirectionControl *)parameters)->Step();
+		reinterpret_cast<StepperOutputService_StepDirectionControl *>(stepperOutputService_StepDirectionControl)->Step();
 	}
 
 	StepperOutputService_StepDirectionControl::StepperOutputService_StepDirectionControl(const HardwareAbstractionCollection *hardwareAbstractionCollection, const StepperOutputService_StepDirectionControlConfig *config, IBooleanOutputService *stepBooleanOutputService, IBooleanOutputService *directionBooleanOutputService)
@@ -19,7 +19,7 @@ namespace IOServices
 		_stepTask = new Task(StepCallBack, this, false);
 	}
 
-	void StepperOutputService_StepDirectionControl::Step(int steps)
+	void StepperOutputService_StepDirectionControl::Step(int32_t steps)
 	{
 		if(_stepQueue == 0)
 		{
@@ -46,10 +46,10 @@ namespace IOServices
 			_stepQueue++;
 		}
 
-		unsigned int ticksPerSecond = _hardwareAbstractionCollection->TimerService->GetTicksPerSecond();
-		unsigned int tick = _hardwareAbstractionCollection->TimerService->GetTick();
+		const uint32_t ticksPerSecond = _hardwareAbstractionCollection->TimerService->GetTicksPerSecond();
+		const uint32_t tick = _hardwareAbstractionCollection->TimerService->GetTick();
 		_stepBooleanOutputService->OutputSet();
-		_hardwareAbstractionCollection->TimerService->ReScheduleTask(_offTask, tick + ticksPerSecond * _config->StepWidth);
+		_hardwareAbstractionCollection->TimerService->ReScheduleTask(_offTask, (uint32_t)round(tick + ticksPerSecond * _config->StepWidth));
 		_hardwareAbstractionCollection->TimerService->ReScheduleTask(_stepTask, tick + ticksPerSecond / _config->MaxStepsPerSecond);
 	}
 	

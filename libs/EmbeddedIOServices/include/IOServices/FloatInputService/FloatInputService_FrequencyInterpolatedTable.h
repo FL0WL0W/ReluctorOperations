@@ -20,27 +20,19 @@ namespace IOServices
 		}
 		
 	public:
-		static FloatInputService_FrequencyInterpolatedTableConfig* Cast(void *p)
-		{
-			FloatInputService_FrequencyInterpolatedTableConfig *ret = (FloatInputService_FrequencyInterpolatedTableConfig *)p;
-
-			ret->Table = (float *)(ret + 1);
-
-			return ret;
-		}
-		
-		unsigned int Size()
+		constexpr const unsigned int Size() const
 		{
 			return sizeof(FloatInputService_FrequencyInterpolatedTableConfig) +
 				(sizeof(float) * Resolution);
 		}
 
-		unsigned short PwmPin;
-		unsigned short MinFrequency;
-		unsigned short MaxFrequency;
-		unsigned short DotSampleRate;
-		unsigned char Resolution;
-		float *Table;
+		constexpr const float *Table() const { return reinterpret_cast<const float *>(this + 1); }
+
+		uint16_t PwmPin;
+		uint16_t DotSampleRate;
+		uint16_t MinFrequency;
+		uint16_t MaxFrequency;
+		uint8_t Resolution;
 	});
 	
 	class FloatInputService_FrequencyInterpolatedTable : public IFloatInputService
@@ -49,13 +41,13 @@ namespace IOServices
 		const HardwareAbstractionCollection *_hardwareAbstractionCollection;
 		const FloatInputService_FrequencyInterpolatedTableConfig *_config;
 		
-		unsigned int _lastReadTick = 0;
+		uint32_t _lastReadTick = 0;
 		float _lastValue = 0;
 		
 	public:
 		FloatInputService_FrequencyInterpolatedTable(const HardwareAbstractionCollection *hardwareAbstractionCollection, const FloatInputService_FrequencyInterpolatedTableConfig *config);
 
-		void ReadValue();
+		void ReadValue() override;
 	};
 }
 #endif

@@ -3,9 +3,9 @@
 #ifdef STEPPEROUTPUTSERVICE_HALFSTEPCONTROL_H
 namespace IOServices
 {
-	void StepperOutputService_HalfStepControl::StepCallBack(void *parameters)
+	void StepperOutputService_HalfStepControl::StepCallBack(void *stepperOutputService_HalfStepControl)
 	{
-		((StepperOutputService_HalfStepControl *)parameters)->Step();
+		reinterpret_cast<StepperOutputService_HalfStepControl *>(stepperOutputService_HalfStepControl)->Step();
 	}
 
 	StepperOutputService_HalfStepControl::StepperOutputService_HalfStepControl(const HardwareAbstractionCollection *hardwareAbstractionCollection, const StepperOutputService_HalfStepControlConfig *config, IBooleanOutputService *coilAPlusBooleanOutputService, IBooleanOutputService *coilAMinusBooleanOutputService, IBooleanOutputService *coilBPlusBooleanOutputService, IBooleanOutputService *coilBMinusBooleanOutputService)
@@ -21,7 +21,7 @@ namespace IOServices
 		SetState(0);
 	}
 
-	void StepperOutputService_HalfStepControl::Step(int steps)
+	void StepperOutputService_HalfStepControl::Step(int32_t steps)
 	{
 		if(_stepQueue == 0)
 		{
@@ -51,13 +51,13 @@ namespace IOServices
 			_stepQueue++;
 		}
 
-		unsigned int ticksPerSecond = _hardwareAbstractionCollection->TimerService->GetTicksPerSecond();
+		const uint32_t ticksPerSecond = _hardwareAbstractionCollection->TimerService->GetTicksPerSecond();
 		SetState(_state);
-		unsigned int tick = _hardwareAbstractionCollection->TimerService->GetTick();
+		const uint32_t tick = _hardwareAbstractionCollection->TimerService->GetTick();
 		_hardwareAbstractionCollection->TimerService->ReScheduleTask(_stepTask, tick + ticksPerSecond / _config->MaxStepsPerSecond);
 	}
 	
-	void StepperOutputService_HalfStepControl::SetState(unsigned char state)
+	void StepperOutputService_HalfStepControl::SetState(int8_t state)
 	{
 		switch(state)
 		{

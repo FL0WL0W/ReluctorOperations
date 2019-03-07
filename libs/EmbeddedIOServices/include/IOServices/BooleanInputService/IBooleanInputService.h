@@ -2,7 +2,7 @@
 
 using namespace HardwareAbstraction;
 
-#ifndef IBOOLEANINPUTSERVICE_H
+#if !defined(IBOOLEANINPUTSERVICE_H) && defined(HARDWAREABSTRACTIONCOLLECTION_H)
 #define IBOOLEANINPUTSERVICE_H
 namespace IOServices
 {
@@ -14,7 +14,7 @@ namespace IOServices
 
 		static void ReadValueCallBack(void *booleanInputService);
 
-		static IBooleanInputService* CreateBooleanInputService(const HardwareAbstractionCollection *hardwareAbstractionCollection, void *config, unsigned int *sizeOut);
+		static IBooleanInputService* CreateBooleanInputService(const HardwareAbstractionCollection *hardwareAbstractionCollection, const void *config, unsigned int *sizeOut);
 	};
 }
 #endif

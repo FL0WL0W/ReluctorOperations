@@ -2,7 +2,7 @@
 
 using namespace HardwareAbstraction;
 
-#ifndef IBUTTONSERVICE_H
+#if !defined(IBUTTONSERVICE_H) && defined(HARDWAREABSTRACTIONCOLLECTION_H)
 #define IBUTTONSERVICE_H
 namespace IOServices
 {
@@ -18,7 +18,7 @@ namespace IOServices
 		void Clear();
 		virtual void Tick() = 0;
 
-		static IButtonService* CreateButtonService(const HardwareAbstractionCollection *hardwareAbstractionCollection, void *config, unsigned int *sizeOut);
+		static IButtonService* CreateButtonService(const HardwareAbstractionCollection *hardwareAbstractionCollection, const void *config, unsigned int *sizeOut);
 		static void IButtonService::TickCallBack(void *buttonService);
 	};
 }

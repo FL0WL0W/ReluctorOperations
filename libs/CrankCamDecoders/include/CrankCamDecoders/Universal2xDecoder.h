@@ -2,33 +2,45 @@
 #include "HardwareAbstraction/ICallBack.h"
 #include "HardwareAbstraction/HardwareAbstractionCollection.h"
 #include "stdint.h"
+#include "math.h"
 #include "Packed.h"
 
-#ifndef GM24XDECODER_H
-#define GM24XDECODER_H
+#ifndef UNIVERSAL2XDECODER_H
+#define UNIVERSAL2XDECODER_H
 namespace CrankCamDecoders
 {
-	class Gm24xDecoder : public ICrankCamDecoder
+	PACK(
+	struct Universal2xDecoderConfig {
+		constexpr const unsigned int Size() const
+		{
+			return sizeof(Universal2xDecoderConfig);
+		}
+
+		uint16_t Pin;
+		float RisingPosition;
+		float FallingPosition;
+	});
+
+	class Universal2xDecoder : public ICrankCamDecoder
 	{
 	protected:
 		const HardwareAbstraction::HardwareAbstractionCollection *_hardwareAbstractionCollection;
-		uint16_t _pin;
+		const Universal2xDecoderConfig *_config;
 
-		unsigned char _state;
-		unsigned char _subState;
+		bool _state;
 		bool _isSynced;
 		uint32_t _lastTick;
 		uint32_t _period;
 		const uint32_t time() const;
 	public:
-		Gm24xDecoder(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const uint16_t pin);
+		Universal2xDecoder(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const Universal2xDecoderConfig *config);
 		float GetPosition() override;
 		uint32_t GetTickPerDegree() override;
 		uint16_t GetRpm() override;
 		uint16_t GetResolution() override;
+		bool IsSynced() override;
 		static void InterruptCallBack(void *decoder);
 		void Interrupt();
-		bool IsSynced() override;
 	};
 }
 #endif
