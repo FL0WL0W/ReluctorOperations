@@ -1,7 +1,7 @@
 #include "stdint.h"
 
-#ifndef RELUCTOR_H
-#define RELUCTOR_H
+#ifndef IRELUCTOR_H
+#define IRELUCTOR_H
 namespace Reluctor
 {	
 	class IReluctor
