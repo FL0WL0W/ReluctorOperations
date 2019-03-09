@@ -1,4 +1,5 @@
 #include "ICallBack.h"
+#include "stdint.h"
 
 #ifndef ITIMERSERVICE_H
 #define ITIMERSERVICE_H
@@ -30,6 +31,7 @@ namespace HardwareAbstraction
 		ICallBack *CallBackInstance;
 		bool DeleteOnExecution;
 		//only let TimerService edit these values
+		bool Scheduled;
 		uint32_t Tick;
 	};
 
