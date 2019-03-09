@@ -7,7 +7,7 @@ namespace Reluctor
 	{
 		_hardwareAbstractionCollection = hardwareAbstractionCollection;
 		_config = config;
-		_hardwareAbstractionCollection->DigitalService->ScheduleRecurringInterrupt(_config->Pin, new HardwareAbstraction::CallBack(InterruptCallBack, this));
+		_hardwareAbstractionCollection->DigitalService->ScheduleRecurringInterrupt(_config->Pin, new HardwareAbstraction::CallBack(Universal2xReluctor::InterruptCallBack, this));
 		_isSynced = false;
 		_lastTick = 0;
 		_period   = 0;
