@@ -57,7 +57,7 @@ namespace Reluctor
 		while(degreesSinceLastTick < 0)
 			degreesSinceLastTick += 360;
 		//account for negative positions and weird positions > 360
-		while(degreesSinceLastTick > 0)
+		while(degreesSinceLastTick > 360)
 			degreesSinceLastTick -= 360;
 
 		uint32_t tick = _hardwareAbstractionCollection->TimerService->GetTick();
