@@ -14,17 +14,9 @@ namespace Reluctor
 		_state	  = false;
 	}
 	
-	const uint32_t Universal2xReluctor::time() const
-	{
-		unsigned int tick = _hardwareAbstractionCollection->TimerService->GetTick();
-		if (tick < _lastTick)
-			return tick + (4294967295 - _lastTick);
-		return tick - _lastTick;
-	}
-	
 	float Universal2xReluctor::GetPosition(void)
 	{
-		return (_state? + _config->RisingPosition : _config->FallingPosition) + time() / static_cast<float>(_period);
+		return (_state? + _config->RisingPosition : _config->FallingPosition) + _hardwareAbstractionCollection->TimerService->GetElapsedTick(_lastTick) / static_cast<float>(_period);
 	}
 	
 	uint32_t Universal2xReluctor::GetTickPerDegree(void)
@@ -69,11 +61,7 @@ namespace Reluctor
 			degreesSinceLastTick -= 360;
 
 		uint32_t tick = _hardwareAbstractionCollection->TimerService->GetTick();
-		uint32_t period;
-		if (tick < _lastTick)
-			period = tick + (4294967295 - _lastTick);
-		else
-			period = tick - _lastTick;
+		uint32_t period = _hardwareAbstractionCollection->TimerService->GetElapsedTick(_lastTick);
 
 		_period = static_cast<uint32_t>(round((360 * period) / degreesSinceLastTick));
 

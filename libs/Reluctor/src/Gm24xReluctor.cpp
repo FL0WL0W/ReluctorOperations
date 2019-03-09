@@ -15,17 +15,9 @@ namespace Reluctor
 		_subState = 0;
 	}
 	
-	const uint32_t Gm24xReluctor::time() const
-	{
-		uint32_t tick = _hardwareAbstractionCollection->TimerService->GetTick();
-		if (tick < _lastTick)
-			return tick + (4294967295 - _lastTick);
-		return tick - _lastTick;
-	}
-	
 	float Gm24xReluctor::GetPosition(void)
 	{
-		return _state * 15 + (time() * 15) / static_cast<float>(_period);
+		return _state * 15 + (_hardwareAbstractionCollection->TimerService->GetElapsedTick(_lastTick) * 15) / static_cast<float>(_period);
 	}
 	
 	uint32_t Gm24xReluctor::GetTickPerDegree(void)
@@ -57,14 +49,12 @@ namespace Reluctor
 	{
 		bool rising = _hardwareAbstractionCollection->DigitalService->ReadPin(_pin);
 
+		uint32_t elapsedTick = _hardwareAbstractionCollection->TimerService->GetElapsedTick(_lastTick);
 		uint32_t tick = _hardwareAbstractionCollection->TimerService->GetTick();
 			
 		if (!rising)
 		{
-			if (tick < _lastTick)
-				_period = tick + (4294967295 - _lastTick);
-			else
-				_period = tick - _lastTick;
+			_period = elapsedTick;
 			
 			_state++;
 			if (_state > 23)
@@ -74,11 +64,7 @@ namespace Reluctor
 		}
 		else if(_period != 0)
 		{
-			uint32_t interumPeriod;
-			if (tick < _lastTick)
-				interumPeriod = tick + (4294967295 - _lastTick);
-			else
-				interumPeriod = tick - _lastTick;
+			uint32_t interumPeriod = elapsedTick;
 			
 			if (interumPeriod > _period * 0.6)
 			{
