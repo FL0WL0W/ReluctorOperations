@@ -29,7 +29,7 @@ namespace UnitTests
 		{
 			tick += 2;
 			EXPECT_CALL(timerService, GetTick())
-				.Times(2)
+				.Times(1)
 				.WillRepeatedly(Return(tick));
 				
 			EXPECT_CALL(digitalService, ReadPin(1))
@@ -41,7 +41,7 @@ namespace UnitTests
 
 			tick += 6;
 			EXPECT_CALL(timerService, GetTick())
-				.Times(2)
+				.Times(1)
 				.WillRepeatedly(Return(tick));
 
 			EXPECT_CALL(digitalService, ReadPin(1))
@@ -54,24 +54,15 @@ namespace UnitTests
 
 		tick += 4;
 		EXPECT_CALL(timerService, GetTick())
-			.Times(18)
-			.WillOnce(Return(tick))
+			.Times(9)
 			.WillOnce(Return(tick))
 			.WillOnce(Return(tick + 6))
-			.WillOnce(Return(tick + 6))
-			.WillOnce(Return(tick + 8))
 			.WillOnce(Return(tick + 8))
 			.WillOnce(Return(tick + 14))
-			.WillOnce(Return(tick + 14))
-			.WillOnce(Return(tick + 16))
 			.WillOnce(Return(tick + 16))
 			.WillOnce(Return(tick + 22))
-			.WillOnce(Return(tick + 22))
-			.WillOnce(Return(tick + 24))
 			.WillOnce(Return(tick + 24))
 			.WillOnce(Return(tick + 30))
-			.WillOnce(Return(tick + 30))
-			.WillOnce(Return(tick + 32))
 			.WillOnce(Return(tick + 32));
 
 		EXPECT_CALL(digitalService, ReadPin(1))

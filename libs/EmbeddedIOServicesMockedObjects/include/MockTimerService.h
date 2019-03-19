@@ -7,10 +7,12 @@ namespace HardwareAbstraction
 	class MockTimerService : public ITimerService
 	{
 	public:
-		unsigned int Tick;
-		MOCK_METHOD1(ScheduleCallBack, void(unsigned int tick));
-		MOCK_METHOD0(GetTick, unsigned int());
-		MOCK_METHOD0(GetTicksPerSecond, unsigned int());
+		uint32_t Tick;
+		MOCK_METHOD1(ScheduleCallBack, void(uint32_t tick));
+		MOCK_METHOD0(GetTick, const uint32_t());
+		MOCK_METHOD0(GetTicksPerSecond, const uint32_t());
+		MOCK_METHOD0(DisableCallBack, void());
+		MOCK_METHOD0(EnableCallBack, void());
 	};
 }
 #endif

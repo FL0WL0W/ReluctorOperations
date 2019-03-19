@@ -15,14 +15,21 @@ namespace Reluctor
 		_subState = 0;
 	}
 	
-	float Gm24xReluctor::GetPosition(void)
+	float Gm24xReluctor::GetPosition()
 	{
-		return _state * 15 + (_hardwareAbstractionCollection->TimerService->GetElapsedTick(_lastTick) * 15) / static_cast<float>(_period);
+		float position;
+		do
+		{
+			_interruptCalled = false;
+			position = _state * 15 + (_hardwareAbstractionCollection->TimerService->GetElapsedTick(_lastTick) * 15) / static_cast<float>(_period);
+		} while(_interruptCalled);
+		
+		return position;
 	}
 	
-	uint32_t Gm24xReluctor::GetTickPerDegree(void)
+	float Gm24xReluctor::GetTickPerDegree(void)
 	{
-		return _period / 15;
+		return _period / 15.0f;
 	}
 	
 	uint16_t Gm24xReluctor::GetRpm(void)
@@ -37,42 +44,46 @@ namespace Reluctor
 
 	bool Gm24xReluctor::IsSynced()
 	{
+		if(_isSynced && _hardwareAbstractionCollection->TimerService->GetElapsedTick(_lastTick) > _period * 2)
+			_isSynced = false;
 		return _isSynced;
 	}
 
-	void Gm24xReluctor::InterruptCallBack(void *reluctor)
+	void Gm24xReluctor::InterruptCallBack(void *reluctorPointer)
 	{
-		reinterpret_cast<Gm24xReluctor *>(reluctor)->Interrupt();
-	}
+		Gm24xReluctor *reluctor = reinterpret_cast<Gm24xReluctor *>(reluctorPointer);
+		bool rising = reluctor->_hardwareAbstractionCollection->DigitalService->ReadPin(reluctor->_pin);
+		uint32_t tick = reluctor->_hardwareAbstractionCollection->TimerService->GetTick();
 
-	void Gm24xReluctor::Interrupt()
-	{
-		bool rising = _hardwareAbstractionCollection->DigitalService->ReadPin(_pin);
+		int32_t elapsedTick = tick - reluctor->_lastTick;
 
-		uint32_t elapsedTick = _hardwareAbstractionCollection->TimerService->GetElapsedTick(_lastTick);
-		uint32_t tick = _hardwareAbstractionCollection->TimerService->GetTick();
-			
+		if(reluctor->_isSynced && elapsedTick < 0)
+			return;
+
 		if (!rising)
 		{
-			_period = elapsedTick;
+			reluctor->_period = elapsedTick;
 			
-			_state++;
-			if (_state > 23)
-				_state = 0;
+			reluctor->_state++;
+			if (reluctor->_state > 23)
+				reluctor->_state = 0;
 			
-			_lastTick = tick;
+			if(tick == 0)
+				reluctor->_lastTick = 1;
+			else
+				reluctor->_lastTick = tick;
 		}
-		else if(_period != 0)
+		else if(reluctor->_period != 0)
 		{
 			uint32_t interumPeriod = elapsedTick;
 			
-			if (interumPeriod > _period * 0.6)
+			if (interumPeriod > reluctor->_period * 0.6)
 			{
 				//short pulse
 				//    _
 				//|__| |
 				//   ^
-				_subState = 0;
+				reluctor->_subState = 0;
 			}
 			else
 			{
@@ -80,13 +91,15 @@ namespace Reluctor
 				//   __
 				//|_|  |
 				//  ^
-				_subState++;
-				if (_subState == 5)
+				reluctor->_subState++;
+				if (reluctor->_subState == 5)
 				{
-					_state = 5;
-					_isSynced = true;
+					reluctor->_state = 5;
+					reluctor->_isSynced = true;
 				}
 			}
 		}
+		
+		reluctor->_interruptCalled = true;
 	}
 }
