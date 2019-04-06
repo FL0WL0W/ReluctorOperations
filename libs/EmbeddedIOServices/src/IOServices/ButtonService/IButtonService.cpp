@@ -1,5 +1,7 @@
 #include "IOServices/ButtonService/ButtonService_Polling.h"
 #include "IOServices/ButtonService/IButtonService.h"
+#include "Service/HardwareAbstractionServiceBuilder.h"
+#include "Service/ServiceBuilder.h"
 
 #ifdef IBUTTONSERVICE_H
 namespace IOServices
@@ -34,15 +36,23 @@ namespace IOServices
 		reinterpret_cast<IButtonService*>(buttonService)->Tick();
 	}
 
+	void* IButtonService::BuildButtonService(const ServiceLocator * const &serviceLocator, const void *config, unsigned int &sizeOut)
+	{
+		IButtonService *ret = CreateButtonService(serviceLocator->LocateAndCast<const HardwareAbstractionCollection>(HARDWARE_ABSTRACTION_COLLECTION_ID), config, sizeOut);
+		
+		serviceLocator->LocateAndCast<CallBackGroup>(TICK_CALL_BACK_GROUP)->AddIfParametersNotNull(
+			IButtonService::TickCallBack,
+			ret);
+
+		return ret;
+	}
+	
 	IButtonService* IButtonService::CreateButtonService(const HardwareAbstractionCollection *hardwareAbstractionCollection, const void *config, unsigned int &sizeOut)
 	{
-		const uint8_t buttonServiceId = *reinterpret_cast<const uint8_t *>(config);
-		config = reinterpret_cast<const uint8_t *>(config) + 1;
-		sizeOut = sizeof(uint8_t);
-		
+		sizeOut = 0;		
 		IButtonService *buttonService = 0;
 
-		switch (buttonServiceId)
+		switch (ServiceBuilder::CastAndOffset<uint8_t>(config, sizeOut))
 		{
 #ifdef BUTTONSERVICE_POLLING_H
 		case 1:
