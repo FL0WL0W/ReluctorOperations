@@ -36,7 +36,7 @@ namespace UnitTests
 				.Times(1)
 				.WillOnce(Return(false));
 
-			Gm24xReluctor::InterruptCallBack(reluctor);
+			reluctor->InterruptCallBack();
 			ASSERT_FALSE(reluctor->IsSynced());
 
 			tick += 6;
@@ -48,7 +48,7 @@ namespace UnitTests
 				.Times(1)
 				.WillOnce(Return(true));
 				
-			Gm24xReluctor::InterruptCallBack(reluctor);
+			reluctor->InterruptCallBack();
 			ASSERT_FALSE(reluctor->IsSynced());
 		}
 
@@ -69,63 +69,63 @@ namespace UnitTests
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		tick += 34;
@@ -147,63 +147,63 @@ namespace UnitTests
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_FALSE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 		ASSERT_FLOAT_EQ(75 + 3.75f, reluctor->GetPosition());
 
@@ -293,7 +293,7 @@ namespace UnitTests
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 		ASSERT_FLOAT_EQ(90.0f, reluctor->GetPosition());
 
@@ -301,7 +301,7 @@ namespace UnitTests
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 		ASSERT_FLOAT_EQ(105 - 3.75f, reluctor->GetPosition());
 
@@ -309,7 +309,7 @@ namespace UnitTests
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 		ASSERT_FLOAT_EQ(105, reluctor->GetPosition());
 
@@ -318,238 +318,238 @@ namespace UnitTests
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(true));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		EXPECT_CALL(digitalService, ReadPin(1))
 			.Times(1)
 			.WillOnce(Return(false));
 
-		Gm24xReluctor::InterruptCallBack(reluctor);
+		reluctor->InterruptCallBack();
 		ASSERT_TRUE(reluctor->IsSynced());
 
 		ASSERT_FLOAT_EQ(0, reluctor->GetPosition());
