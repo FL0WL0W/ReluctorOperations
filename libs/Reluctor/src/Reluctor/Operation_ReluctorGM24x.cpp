@@ -8,8 +8,9 @@ namespace Reluctor
 		_timerService = timerService;
 	}
 
-	ReluctorResult Operation_ReluctorGM24x::Execute(Variables::Record *record, uint32_t tick)
+	ReluctorResult Operation_ReluctorGM24x::Execute(Variables::Record *record, ScalarVariable tickIn)
 	{
+		uint32_t tick = ScalarVariableTo<uint32_t>(tickIn);
 		ReluctorResult ret;
 		ret.Synced = false;
 		uint8_t last = record->Last;
