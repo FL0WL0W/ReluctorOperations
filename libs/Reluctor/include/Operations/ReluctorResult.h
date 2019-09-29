@@ -1,7 +1,7 @@
 
 #include "Packed.h"
 
-namespace Reluctor
+namespace Operations
 {
     PACK(struct ReluctorResult
     {

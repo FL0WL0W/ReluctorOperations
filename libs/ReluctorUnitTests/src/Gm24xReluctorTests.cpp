@@ -3,11 +3,11 @@
 // #include "gtest/gtest.h"
 // #include "MockTimerService.h"
 // #include "MockDigitalService.h"
-// #include "Reluctor/Gm24xReluctor.h"
+// #include "Operations/Gm24xReluctor.h"
 // using ::testing::AtLeast;
 // using ::testing::Return;
 
-// using namespace Reluctor;
+// using namespace Operations;
 
 // namespace UnitTests
 // {	

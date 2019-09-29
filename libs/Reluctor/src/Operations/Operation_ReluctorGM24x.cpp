@@ -1,7 +1,8 @@
-#include "Reluctor/Operation_ReluctorGM24x.h"
+#include "Variables/Variable_Operation.h"
+#include "Operations/Operation_ReluctorGM24x.h"
 
 #ifdef OPERATION_RELUCTORGM24X_H
-namespace Reluctor
+namespace Operations
 {
 	Operation_ReluctorGM24x::Operation_ReluctorGM24x(HardwareAbstraction::ITimerService *timerService)
 	{
@@ -449,6 +450,6 @@ namespace Reluctor
 		return new Operation_ReluctorGM24x(serviceLocator->LocateAndCast<HardwareAbstraction::ITimerService>(TIMER_SERVICE_ID));
 	}
 
-	ISERVICE_REGISTERFACTORY_CPP(Operation_ReluctorGM24x, 1001)
+	IOPERATION_REGISTERFACTORY_CPP(Operation_ReluctorGM24x, 1001, ReluctorResult, Variables::Record*, ScalarVariable)
 }
 #endif

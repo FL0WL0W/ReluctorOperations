@@ -1,4 +1,4 @@
-// #include "Reluctor/IReluctor.h"
+// #include "Operations/IReluctor.h"
 // #include "HardwareAbstraction/ICallBack.h"
 // #include "HardwareAbstraction/HardwareAbstractionCollection.h"
 // #include "stdint.h"
@@ -7,7 +7,7 @@
 
 // #ifndef UNIVERSAL2XRELUCTOR_H
 // #define UNIVERSAL2XRELUCTOR_H
-// namespace Reluctor
+// namespace Operations
 // {
 // 	PACK(
 // 	struct Universal2xReluctorConfig {

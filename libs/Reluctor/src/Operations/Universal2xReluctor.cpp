@@ -1,7 +1,7 @@
 // #include <stdint.h>
-// #include "Reluctor/Universal2xReluctor.h"
+// #include "Operations/Universal2xReluctor.h"
 
-// namespace Reluctor
+// namespace Operations
 // {
 // 	Universal2xReluctor::Universal2xReluctor(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const Universal2xReluctorConfig *config)
 // 	{

@@ -1,4 +1,4 @@
-// #include "Reluctor/IReluctor.h"
+// #include "Operations/IReluctor.h"
 // #include "HardwareAbstraction/ICallBack.h"
 // #include "HardwareAbstraction/HardwareAbstractionCollection.h"
 // #include "stdint.h"
@@ -6,7 +6,7 @@
 
 // #ifndef GM24XRELUCTOR_H
 // #define GM24XRELUCTOR_H
-// namespace Reluctor
+// namespace Operations
 // {
 // 	class Gm24xReluctor : public IReluctor
 // 	{

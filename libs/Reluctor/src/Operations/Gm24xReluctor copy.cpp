@@ -1,7 +1,7 @@
 // #include <stdint.h>
-// #include "Reluctor/Gm24xReluctor.h"
+// #include "Operations/Gm24xReluctor.h"
 
-// namespace Reluctor
+// namespace Operations
 // {
 // 	Gm24xReluctor::Gm24xReluctor(const HardwareAbstraction::HardwareAbstractionCollection *hardwareAbstractionCollection, const uint16_t pin)
 // 	{

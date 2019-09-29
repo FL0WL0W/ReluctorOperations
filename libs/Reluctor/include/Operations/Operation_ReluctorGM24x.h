@@ -5,12 +5,12 @@
 #include "Service/HardwareAbstractionServiceBuilder.h"
 #include "Packed.h"
 #include "Interpolation.h"
-#include "Reluctor/ReluctorResult.h"
+#include "Operations/ReluctorResult.h"
 #include "ScalarVariable.h"
 
 #ifndef OPERATION_RELUCTORGM24X_H
 #define OPERATION_RELUCTORGM24X_H
-namespace Reluctor
+namespace Operations
 {
 	class Operation_ReluctorGM24x : public Operations::IOperation<ReluctorResult, Variables::Record*, ScalarVariable>
 	{

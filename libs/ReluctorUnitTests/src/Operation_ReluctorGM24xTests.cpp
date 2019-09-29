@@ -1,12 +1,12 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "Reluctor/Operation_ReluctorGM24x.h"
+#include "Operations/Operation_ReluctorGM24x.h"
 #include "MockTimerService.h"
 using ::testing::AtLeast;
 using ::testing::Return;
 
 using namespace Operations;
-using namespace Reluctor;
+using namespace Operations;
 using namespace Service;
 
 namespace UnitTests
