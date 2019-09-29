@@ -15,8 +15,8 @@ namespace UnitTests
 	{
 		protected:
 		ServiceLocator *_serviceLocator;
-		Operations::IOperation<ReluctorResult, VariableBus::Record*, uint32_t> *_operation;
-		VariableBus::Record *_record;
+		Operations::IOperation<ReluctorResult, Variables::Record*, uint32_t> *_operation;
+		Variables::Record *_record;
 		MockTimerService _timerService;
 
 		Operation_ReluctorGM24xTests() 
@@ -36,10 +36,10 @@ namespace UnitTests
 
 			Operation_ReluctorGM24x::RegisterFactory();
 			unsigned int size = 0;
-			_operation = static_cast<Operations::IOperation<ReluctorResult, VariableBus::Record*, uint32_t> *>(IOperationBase::Create(_serviceLocator, config, size));
+			_operation = static_cast<Operations::IOperation<ReluctorResult, Variables::Record*, uint32_t> *>(IOperationBase::Create(_serviceLocator, config, size));
 			EXPECT_EQ(expectedSize, size);
 
-			_record = new VariableBus::Record(200);
+			_record = new Variables::Record(200);
 			_record->Frames[0].State = false;
 			_record->Frames[0].Valid = true;
 			_record->Frames[0].Tick = 0;

@@ -8,7 +8,7 @@ namespace Reluctor
 		_timerService = timerService;
 	}
 
-	ReluctorResult Operation_ReluctorGM24x::Execute(VariableBus::Record *record, uint32_t tick)
+	ReluctorResult Operation_ReluctorGM24x::Execute(Variables::Record *record, uint32_t tick)
 	{
 		ReluctorResult ret;
 		ret.Synced = false;
@@ -18,21 +18,21 @@ namespace Reluctor
 		const uint8_t startingLast = last;
 		while(tick - record->Frames[last].Tick > 2147483648)
 		{
-			last = VariableBus::Record::Subtract(last, 1, record->Length);
+			last = Variables::Record::Subtract(last, 1, record->Length);
 			if(!record->Frames[last].Valid)
 				return ret;;
 			if(startingLast == last)
 				return ret;;
 		}
 
-		uint8_t lastMinus8 =  VariableBus::Record::Subtract(last, 8, record->Length);
+		uint8_t lastMinus8 =  Variables::Record::Subtract(last, 8, record->Length);
 		if(!record->Frames[lastMinus8].Valid)
 			return ret;;
 
-		uint8_t lastMinus1 =  VariableBus::Record::Subtract(last, 1, record->Length);
-		uint8_t lastMinus2 =  VariableBus::Record::Subtract(last, 2, record->Length);
-		uint8_t lastMinus4 =  VariableBus::Record::Subtract(last, 4, record->Length);
-		uint8_t lastMinus6 =  VariableBus::Record::Subtract(last, 6, record->Length);
+		uint8_t lastMinus1 =  Variables::Record::Subtract(last, 1, record->Length);
+		uint8_t lastMinus2 =  Variables::Record::Subtract(last, 2, record->Length);
+		uint8_t lastMinus4 =  Variables::Record::Subtract(last, 4, record->Length);
+		uint8_t lastMinus6 =  Variables::Record::Subtract(last, 6, record->Length);
 
 		uint16_t baseDegree = 0;
 		uint16_t pulseDegree = 0;
@@ -429,13 +429,13 @@ namespace Reluctor
 		return ret;
 	}
 
-	bool Operation_ReluctorGM24x::IsLongPulse(VariableBus::Record *record, uint8_t frame)
+	bool Operation_ReluctorGM24x::IsLongPulse(Variables::Record *record, uint8_t frame)
 	{
 		if(record->Frames[frame].State)
-			frame = VariableBus::Record::Subtract(frame, 1, record->Length);
+			frame = Variables::Record::Subtract(frame, 1, record->Length);
 
-		uint8_t frameMinus1 = VariableBus::Record::Subtract(frame, 1, record->Length);
-		uint8_t frameMinus2 = VariableBus::Record::Subtract(frame, 2, record->Length);
+		uint8_t frameMinus1 = Variables::Record::Subtract(frame, 1, record->Length);
+		uint8_t frameMinus2 = Variables::Record::Subtract(frame, 2, record->Length);
 
 		uint32_t ticksPer15Degrees = record->Frames[frame].Tick - record->Frames[frameMinus2].Tick;
 		uint32_t ticksPer7P5Degrees = ticksPer15Degrees / 2;
