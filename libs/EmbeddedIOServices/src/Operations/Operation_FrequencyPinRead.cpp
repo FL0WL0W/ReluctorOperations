@@ -1,3 +1,4 @@
+#include "Variables/Variable_Operation.h"
 #include "Operations/Operation_FrequencyPinRead.h"
 
 #ifdef OPERATION_FREQUENCYPINREAD_H
@@ -12,9 +13,9 @@ namespace Operations
 		_pwmService->InitPin(_pin, In, _minFrequency);
 	}
 
-	float Operation_FrequencyPinRead::Execute()
+	ScalarVariable Operation_FrequencyPinRead::Execute()
 	{
-		return 1 / _pwmService->ReadPin(_pin).Period;
+		return ScalarVariableFrom(1 / _pwmService->ReadPin(_pin).Period);
 	}
 
 	IOperationBase *Operation_FrequencyPinRead::Create(Service::ServiceLocator * const &serviceLocator, const void *config, unsigned int &sizeOut)
@@ -24,6 +25,6 @@ namespace Operations
 		return new Operation_FrequencyPinRead(serviceLocator->LocateAndCast<HardwareAbstraction::IPwmService>(PWM_SERVICE_ID), pin, minFrequency);
 	}
 
-	ISERVICE_REGISTERFACTORY_CPP(Operation_FrequencyPinRead, 6)
+	IOPERATION_REGISTERFACTORY_CPP(Operation_FrequencyPinRead, 6, ScalarVariable)
 }
 #endif

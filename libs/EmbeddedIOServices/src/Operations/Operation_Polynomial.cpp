@@ -1,3 +1,4 @@
+#include "Variables/Variable_Operation.h"
 #include "Operations/Operation_Polynomial.h"
 
 #ifdef OPERATION_POLYNOMIAL_H
@@ -8,8 +9,9 @@ namespace Operations
 		_config = config;
 	}
 
-	float Operation_Polynomial::Execute(float x)
+	ScalarVariable Operation_Polynomial::Execute(ScalarVariable xIn)
 	{
+		const float x = ScalarVariableTo<float>(xIn);
 		const float * a = _config->A();
 		float val = a[0];
 		for (uint8_t i = 1; i <= _config->Degree; i++)
@@ -18,7 +20,7 @@ namespace Operations
 			val = _config->MinValue;
 		else if (val > _config->MaxValue)
 			val = _config->MaxValue;
-		return val;
+		return ScalarVariableFrom(val);
 	}
 
 	IOperationBase *Operation_Polynomial::Create(Service::ServiceLocator * const &serviceLocator, const void *config, unsigned int &sizeOut)
@@ -28,6 +30,6 @@ namespace Operations
 		return new Operation_Polynomial(polynomialConfig);
 	}
 
-	ISERVICE_REGISTERFACTORY_CPP(Operation_Polynomial, 1)
+	IOPERATION_REGISTERFACTORY_CPP(Operation_Polynomial, 1, ScalarVariable, ScalarVariable)
 }
 #endif

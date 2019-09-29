@@ -6,19 +6,20 @@
 #include "Packed.h"
 #include "Interpolation.h"
 #include "VariableType.h"
+#include "Reluctor/ReluctorResult.h"
 
-#ifndef OPERATION_RELUCTORGM24XPOSITION_H
-#define OPERATION_RELUCTORGM24XPOSITION_H
+#ifndef OPERATION_RELUCTORGM24X_H
+#define OPERATION_RELUCTORGM24X_H
 namespace Reluctor
 {
-	class Operation_ReluctorGM24xPosition : public Operations::IOperation<float, VariableBus::Record*, uint32_t>
+	class Operation_ReluctorGM24x : public Operations::IOperation<ReluctorResult, VariableBus::Record*, uint32_t>
 	{
 	protected:
 		HardwareAbstraction::ITimerService *_timerService;
 	public:		
-        Operation_ReluctorGM24xPosition(HardwareAbstraction::ITimerService *);
+        Operation_ReluctorGM24x(HardwareAbstraction::ITimerService *);
 
-		float Execute(VariableBus::Record *, uint32_t) override;
+		ReluctorResult Execute(VariableBus::Record *, uint32_t) override;
 		bool IsLongPulse(VariableBus::Record *, uint8_t frame);
 
 		static Operations::IOperationBase *Create(Service::ServiceLocator * const &serviceLocator, const void *config, unsigned int &sizeOut);

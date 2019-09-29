@@ -1,31 +1,33 @@
-#include "Reluctor/Operation_ReluctorGM24xPosition.h"
+#include "Reluctor/Operation_ReluctorGM24x.h"
 
-#ifdef OPERATION_RELUCTORGM24XPOSITION_H
+#ifdef OPERATION_RELUCTORGM24X_H
 namespace Reluctor
 {
-	Operation_ReluctorGM24xPosition::Operation_ReluctorGM24xPosition(HardwareAbstraction::ITimerService *timerService)
+	Operation_ReluctorGM24x::Operation_ReluctorGM24x(HardwareAbstraction::ITimerService *timerService)
 	{
 		_timerService = timerService;
 	}
 
-	float Operation_ReluctorGM24xPosition::Execute(VariableBus::Record *record, uint32_t tick)
+	ReluctorResult Operation_ReluctorGM24x::Execute(VariableBus::Record *record, uint32_t tick)
 	{
+		ReluctorResult ret;
+		ret.Synced = false;
 		uint8_t last = record->Last;
 		if(!record->Frames[last].Valid)
-			return -1;
+			return ret;;
 		const uint8_t startingLast = last;
 		while(tick - record->Frames[last].Tick > 2147483648)
 		{
 			last = VariableBus::Record::Subtract(last, 1, record->Length);
 			if(!record->Frames[last].Valid)
-				return -1;
+				return ret;;
 			if(startingLast == last)
-				return -1;
+				return ret;;
 		}
 
 		uint8_t lastMinus8 =  VariableBus::Record::Subtract(last, 8, record->Length);
 		if(!record->Frames[lastMinus8].Valid)
-			return -1;
+			return ret;;
 
 		uint8_t lastMinus1 =  VariableBus::Record::Subtract(last, 1, record->Length);
 		uint8_t lastMinus2 =  VariableBus::Record::Subtract(last, 2, record->Length);
@@ -106,7 +108,7 @@ namespace Reluctor
 						{
 							//long-long-short-long-short
 							//wtf?
-							return -1;
+							return ret;;
 						}
 					}
 					else
@@ -154,7 +156,7 @@ namespace Reluctor
 						{
 							//long-short-long-long-short
 							//wtf?
-							return -1;
+							return ret;;
 						}
 					}
 					else
@@ -163,7 +165,7 @@ namespace Reluctor
 						{
 							//long-short-long-short-long
 							//wtf?
-							return -1;
+							return ret;;
 						}
 						else
 						{
@@ -195,7 +197,7 @@ namespace Reluctor
 						{
 							//long-short-short-long-short
 							//wtf?
-							return -1;
+							return ret;;
 						}
 					}
 					else
@@ -262,7 +264,7 @@ namespace Reluctor
 						{
 							//short-long-long-short-long
 							//wtf?
-							return -1;
+							return ret;;
 						}
 						else
 						{
@@ -284,7 +286,7 @@ namespace Reluctor
 						{
 							//short-long-short-long-long
 							//wtf?
-							return -1;
+							return ret;;
 						}
 						else
 						{
@@ -303,7 +305,7 @@ namespace Reluctor
 						{
 							//short-long-short-short-long
 							//wtf?
-							return -1;
+							return ret;;
 						}
 						else
 						{
@@ -361,7 +363,7 @@ namespace Reluctor
 						{
 							//short-short-long-short-short
 							//wtf?
-							return -1;
+							return ret;;
 						}
 					}
 				}
@@ -420,10 +422,14 @@ namespace Reluctor
 				pulseDegree = 3;
 		}
 
-		return baseDegree + static_cast<float>((tick - record->Frames[last].Tick) * pulseDegree) / (record->Frames[last].Tick - record->Frames[lastMinus1].Tick);
+		ret.PositionDot = static_cast<float>(pulseDegree) / (record->Frames[last].Tick - record->Frames[lastMinus1].Tick);
+		ret.Position = baseDegree + (tick - record->Frames[last].Tick) * ret.PositionDot;
+		ret.PositionDot *= _timerService->GetTicksPerSecond();
+		ret.Synced = true;
+		return ret;
 	}
 
-	bool Operation_ReluctorGM24xPosition::IsLongPulse(VariableBus::Record *record, uint8_t frame)
+	bool Operation_ReluctorGM24x::IsLongPulse(VariableBus::Record *record, uint8_t frame)
 	{
 		if(record->Frames[frame].State)
 			frame = VariableBus::Record::Subtract(frame, 1, record->Length);
@@ -437,11 +443,11 @@ namespace Reluctor
 		return record->Frames[frame].Tick - record->Frames[frameMinus1].Tick > ticksPer7P5Degrees;
 	}
 
-	Operations::IOperationBase *Operation_ReluctorGM24xPosition::Create(Service::ServiceLocator * const &serviceLocator, const void *config, unsigned int &sizeOut)
+	Operations::IOperationBase *Operation_ReluctorGM24x::Create(Service::ServiceLocator * const &serviceLocator, const void *config, unsigned int &sizeOut)
 	{
-		return new Operation_ReluctorGM24xPosition(serviceLocator->LocateAndCast<HardwareAbstraction::ITimerService>(TIMER_SERVICE_ID));
+		return new Operation_ReluctorGM24x(serviceLocator->LocateAndCast<HardwareAbstraction::ITimerService>(TIMER_SERVICE_ID));
 	}
 
-	ISERVICE_REGISTERFACTORY_CPP(Operation_ReluctorGM24xPosition, 1002)
+	ISERVICE_REGISTERFACTORY_CPP(Operation_ReluctorGM24x, 1001)
 }
 #endif
