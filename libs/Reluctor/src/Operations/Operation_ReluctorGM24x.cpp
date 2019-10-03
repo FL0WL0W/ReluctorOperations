@@ -11,7 +11,7 @@ namespace Operations
 
 	ReluctorResult Operation_ReluctorGM24x::Execute(Variables::Record *record, ScalarVariable tickIn)
 	{
-		uint32_t tick = ScalarVariableTo<uint32_t>(tickIn);
+		uint32_t tick = tickIn.To<uint32_t>();
 		ReluctorResult ret;
 		ret.Synced = false;
 		uint8_t last = record->Last;
