@@ -7,6 +7,7 @@ namespace Operations
     {
         float Position;
         float PositionDot;
+		uint32_t CalculatedTick;
         bool Synced;
     });
 }

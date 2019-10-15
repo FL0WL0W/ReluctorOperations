@@ -4,50 +4,34 @@
 #include "Packed.h"
 #include "Interpolation.h"
 #include "ScalarVariable.h"
+#include "HardwareAbstraction/ITimerService.h"
 
 /*
 To create this operator
 uint16									6001(BUILDER_OPERATION)
 uint16									xx(InstanceID of Operation)
-uint16									14(FactoryID)
-MathOperation							Operation
+uint16									16(FactoryID)
 
 To use this operator on a variable in the main loop
 uint16									7001(BUILDER_VARIABLE)
-uint16									14(FactoryID)
+uint16									16(FactoryID)
 uint16									xx(InstanceID of Variable Result)
 uint16									xx(InstanceID of Operation)
-uint16									xx(InstanceID of Variable X)
-uint16									xx(InstanceID of Variable Y)
 */
 
-#ifndef OPERATION_MATH_H
-#define OPERATION_MATH_H
+#ifndef OPERATION_GETTICK_H
+#define OPERATION_GETTICK_H
 namespace Operations
 {
-	const enum MathOperation : uint8_t
-	{
-		ADD = 0,
-		SUBTRACT = 1,
-		MULTIPLY = 2,
-		DIVIDE = 3,
-		AND = 4,
-		OR = 5,
-		GREATERTHAN = 6,
-		LESSTHAN = 7,
-		EQUAL = 8,
-		GREATERTHANOREQUAL = 9,
-		LESSTHANOREQUAL = 10
-	};
-
-	class Operation_Math : public IOperation<ScalarVariable, ScalarVariable, ScalarVariable>
+	class Operation_GetTick : public IOperation<ScalarVariable>
 	{
 	protected:
-		MathOperation _operation;
+		static Operation_GetTick *_instance;
+		HardwareAbstraction::ITimerService *_timerService;
 	public:		
-        Operation_Math(MathOperation operation);
+        Operation_GetTick(HardwareAbstraction::ITimerService *timerService);
 
-		ScalarVariable Execute(ScalarVariable x, ScalarVariable y) override;
+		ScalarVariable Execute() override;
 
 		static IOperationBase *Create(Service::ServiceLocator * const &serviceLocator, const void *config, unsigned int &sizeOut);
 		ISERVICE_REGISTERFACTORY_H

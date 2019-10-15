@@ -39,7 +39,8 @@ namespace UnitTests
 			_operation = static_cast<Operations::IOperation<ReluctorResult, Variables::Record*, ScalarVariable> *>(IOperationBase::Create(_serviceLocator, config, size));
 			EXPECT_EQ(expectedSize, size);
 
-			_record = new Variables::Record(200);
+			_record = new Variables::Record();
+			_record->Initialize(200);
 			_record->Frames[0].State = false;
 			_record->Frames[0].Valid = true;
 			_record->Frames[0].Tick = 0;

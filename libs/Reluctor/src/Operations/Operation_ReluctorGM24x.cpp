@@ -11,20 +11,20 @@ namespace Operations
 
 	ReluctorResult Operation_ReluctorGM24x::Execute(Variables::Record *record, ScalarVariable tickIn)
 	{
-		uint32_t tick = tickIn.To<uint32_t>();
 		ReluctorResult ret;
+		ret.CalculatedTick = tickIn.To<uint32_t>();
 		ret.Synced = false;
 		uint8_t last = record->Last;
 		if(!record->Frames[last].Valid)
 			return ret;;
 		const uint8_t startingLast = last;
-		while(tick - record->Frames[last].Tick > 2147483648)
+		while(ret.CalculatedTick - record->Frames[last].Tick > 0x80000000)
 		{
 			last = Variables::Record::Subtract(last, 1, record->Length);
 			if(!record->Frames[last].Valid)
-				return ret;;
+				return ret;
 			if(startingLast == last)
-				return ret;;
+				return ret;
 		}
 
 		uint8_t lastMinus8 =  Variables::Record::Subtract(last, 8, record->Length);
@@ -425,7 +425,9 @@ namespace Operations
 		}
 
 		ret.PositionDot = static_cast<float>(pulseDegree) / (record->Frames[last].Tick - record->Frames[lastMinus1].Tick);
-		ret.Position = baseDegree + (tick - record->Frames[last].Tick) * ret.PositionDot;
+		ret.Position = baseDegree + (ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot;
+		while(ret.Position > 360)
+			ret.Position -= 360;
 		ret.PositionDot *= _timerService->GetTicksPerSecond();
 		ret.Synced = true;
 		return ret;
