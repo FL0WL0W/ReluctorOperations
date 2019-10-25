@@ -10,7 +10,7 @@ namespace Service
 	void ReluctorOperationsRegister::Register()
     {
         /*1001  */Operation_ReluctorGM24x::RegisterFactory();
-        /*1001  */Operation_ReluctorUniversal2x::RegisterFactory();
+        /*1002  */Operation_ReluctorUniversal2x::RegisterFactory();
     }
 }
 #endif
