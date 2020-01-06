@@ -32,11 +32,15 @@ namespace Variables
 	struct Record
 	{
 		public:
+		Record() 
+		{
+			Length = 0;
+		}
 		void Initialize(uint8_t length)
 		{
 			Length = length;
-			const uint32_t byteLength = sizeof(Frame) * length;
-			Frames = (Frame *)calloc(byteLength, byteLength);
+			Last = 0;
+			Frames = (Frame *)calloc(length, sizeof(Frame));
 		}
 		static uint8_t Subtract(const uint8_t &val1, uint8_t val2, const uint8_t &length)
 		{

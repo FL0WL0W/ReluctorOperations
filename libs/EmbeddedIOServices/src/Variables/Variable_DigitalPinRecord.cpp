@@ -9,7 +9,10 @@ namespace Variables
 		_timerService = timerService;
 		_pin = pin;
 		_inverted = inverted;
-		_record = record;
+		if(record != 0)
+			_record = record;
+		else
+			_record = new Record();
 		if(_record->Length != length)
 		{
 			_record->Initialize(length);
@@ -20,12 +23,24 @@ namespace Variables
 
 	void Variable_DigitalPinRecord::TranslateValue()
 	{
+		const uint8_t last = _record->Last;
+		if(!_record->Frames[last].Valid)
+			return;
+
+		const uint32_t tick = _timerService->GetTick();
+		if(HardwareAbstraction::ITimerService::TickLessThanTick(tick, _record->Frames[last].Tick))
+		{
+			for(int i = 0; i < _record->Length; i++)
+			{
+				 _record->Frames[last].Valid = false;
+			}
+		}
 	}
 
 	void Variable_DigitalPinRecord::InterruptCallBack()
 	{
 		bool state = _digitalService->ReadPin(_pin);
-		uint32_t tick = _timerService->GetTick();
+		const uint32_t tick = _timerService->GetTick();
 		if(_inverted)
 			state = !state;
 		uint8_t last = _record->Last;
@@ -48,9 +63,9 @@ namespace Variables
 		const uint16_t pin = IService::CastAndOffset<uint16_t>(config, sizeOut);
 		const bool inverted = IService::CastAndOffset<bool>(config, sizeOut);
 					
-		Variable_DigitalPinRecord *variableService = new Variable_DigitalPinRecord(GetOrCreateVariable<Record>(serviceLocator, variableId), serviceLocator->LocateAndCast<HardwareAbstraction::IDigitalService>(DIGITAL_SERVICE_ID), serviceLocator->LocateAndCast<HardwareAbstraction::ITimerService>(TIMER_SERVICE_ID), length, pin, inverted);
+		Variable_DigitalPinRecord *variableService = new Variable_DigitalPinRecord(serviceLocator->LocateAndCast<Record>(BUILDER_VARIABLE, variableId), serviceLocator->LocateAndCast<HardwareAbstraction::IDigitalService>(DIGITAL_SERVICE_ID), serviceLocator->LocateAndCast<HardwareAbstraction::ITimerService>(TIMER_SERVICE_ID), length, pin, inverted);
 
-		serviceLocator->Register(BUILDER_VARIABLE, variableId, variableService->_record);
+		serviceLocator->Register(BUILDER_VARIABLE, variableId, &variableService->_record);
 
 		return variableService;
 	}
