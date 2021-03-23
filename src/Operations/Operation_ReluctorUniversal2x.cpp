@@ -38,7 +38,7 @@ namespace OperationArchitecture
 			return ret;
 
 		//ensure stability
-		const float delta1 = static_cast<float>(_timerService->GetTick() - record->Frames[last].Tick);
+		const float delta1 = static_cast<float>(tick - record->Frames[last].Tick);
 		const float delta2 = static_cast<float>(record->Frames[last].Tick - record->Frames[lastMinus2].Tick);
 		if(delta1 * 0.5 > delta2)
 			return ret;
