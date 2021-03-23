@@ -21,20 +21,20 @@ namespace OperationArchitecture
 				return std::tuple<bool, float, float>{false, 0, 0};
 		}
 
-		uint8_t lastMinus8 =  Record::Subtract(last, 8, record->Length);
+		uint16_t lastMinus8 =  Record::Subtract(last, 8, record->Length);
 		if(!record->Frames[lastMinus8].Valid)
 			return std::tuple<bool, float, float>{false, 0, 0};
 
-		uint8_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
-		uint8_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
-		uint8_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
-		uint8_t lastMinus6 =  Record::Subtract(last, 6, record->Length);
+		uint16_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
+		uint16_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
+		uint16_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
+		uint16_t lastMinus6 =  Record::Subtract(last, 6, record->Length);
 		
-		uint8_t lastDown = last;
+		uint16_t lastDown = last;
 		if(record->Frames[last].State)
 			lastDown = lastMinus1;
-		uint8_t lastDownMinus2 =  Record::Subtract(lastDown, 2, record->Length);
-		uint8_t lastDownMinus4 =  Record::Subtract(lastDown, 4, record->Length);
+		uint16_t lastDownMinus2 =  Record::Subtract(lastDown, 2, record->Length);
+		uint16_t lastDownMinus4 =  Record::Subtract(lastDown, 4, record->Length);
 		const float delta1 = static_cast<float>(tick - record->Frames[lastDown].Tick);
 		const float delta2 = static_cast<float>(record->Frames[last].Tick - record->Frames[lastDownMinus2].Tick);
 		if(delta1 * 0.5 > delta2)
@@ -440,13 +440,13 @@ namespace OperationArchitecture
 		return std::tuple<bool, float, float>{true, position, positionDot};
 	}
 
-	bool Operation_ReluctorGM24x::IsLongPulse(Record *record, uint8_t frame)
+	bool Operation_ReluctorGM24x::IsLongPulse(Record *record, uint16_t frame)
 	{
 		if(record->Frames[frame].State)
 			frame = Record::Subtract(frame, 1, record->Length);
 
-		uint8_t frameMinus1 = Record::Subtract(frame, 1, record->Length);
-		uint8_t frameMinus2 = Record::Subtract(frame, 2, record->Length);
+		uint16_t frameMinus1 = Record::Subtract(frame, 1, record->Length);
+		uint16_t frameMinus2 = Record::Subtract(frame, 2, record->Length);
 
 		uint32_t ticksPer15Degrees = record->Frames[frame].Tick - record->Frames[frameMinus2].Tick;
 		uint32_t ticksPer7P5Degrees = ticksPer15Degrees / 2;

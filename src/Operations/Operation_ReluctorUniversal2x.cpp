@@ -26,9 +26,9 @@ namespace OperationArchitecture
 				return std::tuple<bool, float, float>{false, 0, 0};
 		}
 
-		uint8_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
-		uint8_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
-		uint8_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
+		uint16_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
+		uint16_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
+		uint16_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
 
 		if(!record->Frames[lastMinus2].Valid || !record->Frames[lastMinus4].Valid)
 			return std::tuple<bool, float, float>{false, 0, 0};
