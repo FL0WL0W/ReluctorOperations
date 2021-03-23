@@ -5,9 +5,8 @@ using namespace EmbeddedIOServices;
 #ifdef OPERATION_RELUCTORUNIVERSAL2X_H
 namespace OperationArchitecture
 {
-	Operation_ReluctorUniversal2x::Operation_ReluctorUniversal2x(ITimerService *timerService, float risingPostion, float fallingPosition)
+	Operation_ReluctorUniversal2x::Operation_ReluctorUniversal2x(float risingPostion, float fallingPosition)
 	{
-		_timerService = timerService;
 		_risingPostion = risingPostion;
 		_fallingPosition = fallingPosition;
 	}
@@ -15,12 +14,13 @@ namespace OperationArchitecture
 	ReluctorResult Operation_ReluctorUniversal2x::Execute(Record *record, uint32_t tick)
 	{
 		ReluctorResult ret;
+		ret.TicksPerSecond = record->TicksPerSecond;
 		ret.CalculatedTick = tick;
 		ret.Synced = false;
-		uint8_t last = record->Last;
+		uint16_t last = record->Last;
 		if(!record->Frames[last].Valid)
 			return ret;;
-		const uint8_t startingLast = last;
+		const uint16_t startingLast = last;
 		while(ret.CalculatedTick - record->Frames[last].Tick > 0x80000000)
 		{
 			last = Record::Subtract(last, 1, record->Length);
@@ -30,9 +30,9 @@ namespace OperationArchitecture
 				return ret;
 		}
 
-		uint8_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
-		uint8_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
-		uint8_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
+		uint16_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
+		uint16_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
+		uint16_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
 
 		if(!record->Frames[lastMinus2].Valid || !record->Frames[lastMinus4].Valid)
 			return ret;
@@ -70,14 +70,14 @@ namespace OperationArchitecture
 		ret.Position = basePosition + (ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot;
 		while(ret.Position > 360)
 			ret.Position -= 360;
-		ret.PositionDot *= _timerService->GetTicksPerSecond();
+		ret.PositionDot *= record->TicksPerSecond;
 		ret.Synced = true;
 		return ret;
 	}
 
-	IOperationBase *Operation_ReluctorUniversal2x::Create(const EmbeddedIOServices::EmbeddedIOServiceCollection *embeddedIOServiceCollection, const void *config, unsigned int &sizeOut)
+	IOperationBase *Operation_ReluctorUniversal2x::Create(const void *config, unsigned int &sizeOut)
 	{
-		return new Operation_ReluctorUniversal2x(embeddedIOServiceCollection->TimerService, Config::CastAndOffset<float>(config, sizeOut), Config::CastAndOffset<float>(config, sizeOut));
+		return new Operation_ReluctorUniversal2x(Config::CastAndOffset<float>(config, sizeOut), Config::CastAndOffset<float>(config, sizeOut));
 	}
 }
 #endif

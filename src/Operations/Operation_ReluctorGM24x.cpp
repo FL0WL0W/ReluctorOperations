@@ -4,20 +4,16 @@ using namespace EmbeddedIOServices;
 #ifdef OPERATION_RELUCTORGM24X_H
 namespace OperationArchitecture
 {
-	Operation_ReluctorGM24x::Operation_ReluctorGM24x(ITimerService *timerService)
-	{
-		_timerService = timerService;
-	}
-
 	ReluctorResult Operation_ReluctorGM24x::Execute(Record *record, uint32_t tick)
 	{
 		ReluctorResult ret;
+		ret.TicksPerSecond = record->TicksPerSecond;
 		ret.CalculatedTick = tick;
 		ret.Synced = false;
-		uint8_t last = record->Last;
+		uint16_t last = record->Last;
 		if(!record->Frames[last].Valid)
 			return ret;;
-		const uint8_t startingLast = last;
+		const uint16_t startingLast = last;
 		while(ret.CalculatedTick - record->Frames[last].Tick > 0x80000000)
 		{
 			last = Record::Subtract(last, 1, record->Length);
@@ -27,20 +23,20 @@ namespace OperationArchitecture
 				return ret;
 		}
 
-		uint8_t lastMinus8 =  Record::Subtract(last, 8, record->Length);
+		uint16_t lastMinus8 =  Record::Subtract(last, 8, record->Length);
 		if(!record->Frames[lastMinus8].Valid)
 			return ret;
 
-		uint8_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
-		uint8_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
-		uint8_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
-		uint8_t lastMinus6 =  Record::Subtract(last, 6, record->Length);
+		uint16_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
+		uint16_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
+		uint16_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
+		uint16_t lastMinus6 =  Record::Subtract(last, 6, record->Length);
 		
-		uint8_t lastDown = last;
+		uint16_t lastDown = last;
 		if(record->Frames[last].State)
 			lastDown = lastMinus1;
-		uint8_t lastDownMinus2 =  Record::Subtract(lastDown, 2, record->Length);
-		uint8_t lastDownMinus4 =  Record::Subtract(lastDown, 4, record->Length);
+		uint16_t lastDownMinus2 =  Record::Subtract(lastDown, 2, record->Length);
+		uint16_t lastDownMinus4 =  Record::Subtract(lastDown, 4, record->Length);
 		const float delta1 = static_cast<float>(tick - record->Frames[lastDown].Tick);
 		const float delta2 = static_cast<float>(record->Frames[last].Tick - record->Frames[lastDownMinus2].Tick);
 		if(delta1 * 0.5 > delta2)
@@ -442,18 +438,18 @@ namespace OperationArchitecture
 		ret.Position = baseDegree + (ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot;
 		while(ret.Position > 360)
 			ret.Position -= 360;
-		ret.PositionDot *= _timerService->GetTicksPerSecond();
+		ret.PositionDot *= record->TicksPerSecond;
 		ret.Synced = true;
 		return ret;
 	}
 
-	bool Operation_ReluctorGM24x::IsLongPulse(Record *record, uint8_t frame)
+	bool Operation_ReluctorGM24x::IsLongPulse(Record *record, uint16_t frame)
 	{
 		if(record->Frames[frame].State)
 			frame = Record::Subtract(frame, 1, record->Length);
 
-		uint8_t frameMinus1 = Record::Subtract(frame, 1, record->Length);
-		uint8_t frameMinus2 = Record::Subtract(frame, 2, record->Length);
+		uint16_t frameMinus1 = Record::Subtract(frame, 1, record->Length);
+		uint16_t frameMinus2 = Record::Subtract(frame, 2, record->Length);
 
 		uint32_t ticksPer15Degrees = record->Frames[frame].Tick - record->Frames[frameMinus2].Tick;
 		uint32_t ticksPer7P5Degrees = ticksPer15Degrees / 2;
@@ -461,9 +457,9 @@ namespace OperationArchitecture
 		return record->Frames[frame].Tick - record->Frames[frameMinus1].Tick > ticksPer7P5Degrees;
 	}
 
-	IOperationBase *Operation_ReluctorGM24x::Create(const EmbeddedIOServices::EmbeddedIOServiceCollection *embeddedIOServiceCollection, const void *config, unsigned int &sizeOut)
+	IOperationBase *Operation_ReluctorGM24x::Create(const void *config, unsigned int &sizeOut)
 	{
-		return new Operation_ReluctorGM24x(embeddedIOServiceCollection->TimerService);
+		return new Operation_ReluctorGM24x();
 	}
 }
 #endif

@@ -10,6 +10,7 @@ namespace OperationArchitecture
     {
         float Position;
         float PositionDot;
+		uint32_t TicksPerSecond;
 		uint32_t CalculatedTick;
         bool Synced;
         

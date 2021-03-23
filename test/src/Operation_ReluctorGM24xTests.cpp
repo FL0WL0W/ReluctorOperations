@@ -14,16 +14,11 @@ namespace UnitTests
 		IOperationBase *_operation;
 		Record *_record;
 		MockTimerService _timerService;
-		EmbeddedIOServiceCollection _embeddedIOServiceCollection;
 
 		Operation_ReluctorGM24xTests() 
 		{			
-			_embeddedIOServiceCollection.TimerService = &_timerService;
-			EXPECT_CALL(_timerService, GetTicksPerSecond())
-				.WillRepeatedly(Return(5000));
-
 			unsigned int size = 0;
-			_operation = Operation_ReluctorGM24x::Create(&_embeddedIOServiceCollection, 0, size);
+			_operation = Operation_ReluctorGM24x::Create(0, size);
 
 			_record = new Record();
 			_record->Initialize(200);
