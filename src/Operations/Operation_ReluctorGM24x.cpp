@@ -4,26 +4,32 @@ using namespace EmbeddedIOServices;
 #ifdef OPERATION_RELUCTORGM24X_H
 namespace OperationArchitecture
 {
-	Operation_ReluctorGM24x *Operation_ReluctorGM24x::_instance = 0;
-
-	std::tuple<bool, float, float> Operation_ReluctorGM24x::Execute(Record *record, uint32_t tick)
+	Operation_ReluctorGM24x::Operation_ReluctorGM24x(ITimerService *timerService)
 	{
+		_timerService = timerService;
+	}
+
+	ReluctorResult Operation_ReluctorGM24x::Execute(Record *record, uint32_t tick)
+	{
+		ReluctorResult ret;
+		ret.CalculatedTick = tick;
+		ret.Synced = false;
 		uint16_t last = record->Last;
 		if(!record->Frames[last].Valid)
-			return std::tuple<bool, float, float>{false, 0, 0};
+			return ret;;
 		const uint16_t startingLast = last;
-		while(tick - record->Frames[last].Tick > 0x80000000)
+		while(ret.CalculatedTick - record->Frames[last].Tick > 0x80000000)
 		{
 			last = Record::Subtract(last, 1, record->Length);
 			if(!record->Frames[last].Valid)
-				return std::tuple<bool, float, float>{false, 0, 0};
+				return ret;
 			if(startingLast == last)
-				return std::tuple<bool, float, float>{false, 0, 0};
+				return ret;
 		}
 
 		uint16_t lastMinus8 =  Record::Subtract(last, 8, record->Length);
 		if(!record->Frames[lastMinus8].Valid)
-			return std::tuple<bool, float, float>{false, 0, 0};
+			return ret;
 
 		uint16_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
 		uint16_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
@@ -38,11 +44,11 @@ namespace OperationArchitecture
 		const float delta1 = static_cast<float>(tick - record->Frames[lastDown].Tick);
 		const float delta2 = static_cast<float>(record->Frames[last].Tick - record->Frames[lastDownMinus2].Tick);
 		if(delta1 * 0.5 > delta2)
-			return std::tuple<bool, float, float>{false, 0, 0};
+			return ret;
 		const float delta3 = static_cast<float>(record->Frames[lastDownMinus2].Tick - record->Frames[lastDownMinus4].Tick);
 		const float similarity = delta2 / delta3;
 		if(similarity < 0.5 || similarity > 2)
-			return std::tuple<bool, float, float>{false, 0, 0};
+			return ret;
 
 		uint16_t baseDegree = 0;
 		uint16_t pulseDegree = 0;
@@ -118,7 +124,7 @@ namespace OperationArchitecture
 						{
 							//long-long-short-long-short
 							//wtf?
-							return std::tuple<bool, float, float>{false, 0, 0};
+							return ret;;
 						}
 					}
 					else
@@ -166,7 +172,7 @@ namespace OperationArchitecture
 						{
 							//long-short-long-long-short
 							//wtf?
-							return std::tuple<bool, float, float>{false, 0, 0};
+							return ret;;
 						}
 					}
 					else
@@ -175,7 +181,7 @@ namespace OperationArchitecture
 						{
 							//long-short-long-short-long
 							//wtf?
-							return std::tuple<bool, float, float>{false, 0, 0};
+							return ret;;
 						}
 						else
 						{
@@ -207,7 +213,7 @@ namespace OperationArchitecture
 						{
 							//long-short-short-long-short
 							//wtf?
-							return std::tuple<bool, float, float>{false, 0, 0};
+							return ret;;
 						}
 					}
 					else
@@ -274,7 +280,7 @@ namespace OperationArchitecture
 						{
 							//short-long-long-short-long
 							//wtf?
-							return std::tuple<bool, float, float>{false, 0, 0};
+							return ret;;
 						}
 						else
 						{
@@ -296,7 +302,7 @@ namespace OperationArchitecture
 						{
 							//short-long-short-long-long
 							//wtf?
-							return std::tuple<bool, float, float>{false, 0, 0};
+							return ret;;
 						}
 						else
 						{
@@ -315,7 +321,7 @@ namespace OperationArchitecture
 						{
 							//short-long-short-short-long
 							//wtf?
-							return std::tuple<bool, float, float>{false, 0, 0};
+							return ret;;
 						}
 						else
 						{
@@ -373,7 +379,7 @@ namespace OperationArchitecture
 						{
 							//short-short-long-short-short
 							//wtf?
-							return std::tuple<bool, float, float>{false, 0, 0};
+							return ret;;
 						}
 					}
 				}
@@ -432,12 +438,13 @@ namespace OperationArchitecture
 				pulseDegree = 3;
 		}
 
-		float positionDot = static_cast<float>(pulseDegree) / (record->Frames[last].Tick - record->Frames[lastMinus1].Tick);
-		float position = baseDegree + (tick - record->Frames[last].Tick) * positionDot;
-		while(position > 360)
-			position -= 360;
-		positionDot *= record->TicksPerSecond;
-		return std::tuple<bool, float, float>{true, position, positionDot};
+		ret.PositionDot = static_cast<float>(pulseDegree) / (record->Frames[last].Tick - record->Frames[lastMinus1].Tick);
+		ret.Position = baseDegree + (ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot;
+		while(ret.Position > 360)
+			ret.Position -= 360;
+		ret.PositionDot *= _timerService->GetTicksPerSecond();
+		ret.Synced = true;
+		return ret;
 	}
 
 	bool Operation_ReluctorGM24x::IsLongPulse(Record *record, uint16_t frame)
@@ -454,16 +461,9 @@ namespace OperationArchitecture
 		return record->Frames[frame].Tick - record->Frames[frameMinus1].Tick > ticksPer7P5Degrees;
 	}
 
-	IOperationBase *Operation_ReluctorGM24x::Create(const void *config, unsigned int &sizeOut)
+	IOperationBase *Operation_ReluctorGM24x::Create(const EmbeddedIOServices::EmbeddedIOServiceCollection *embeddedIOServiceCollection, const void *config, unsigned int &sizeOut)
 	{
-		return Construct();
-	}
-
-	Operation_ReluctorGM24x *Operation_ReluctorGM24x::Construct()
-	{
-		if(_instance == 0)
-			_instance = new Operation_ReluctorGM24x();
-		return _instance;
+		return new Operation_ReluctorGM24x(embeddedIOServiceCollection->TimerService);
 	}
 }
 #endif

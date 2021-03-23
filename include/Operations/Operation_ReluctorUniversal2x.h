@@ -1,26 +1,25 @@
 #include "Operations/IOperation.h"
 #include "Operations/Operation_DigitalPinRecord.h"
-#include <tuple>
+#include "ReluctorResult.h"
+#include "Packed.h"
+#include "Interpolation.h"
 
 #ifndef OPERATION_RELUCTORUNIVERSAL2X_H
 #define OPERATION_RELUCTORUNIVERSAL2X_H
 namespace OperationArchitecture
 {
-	//Return Variables
-	//Synced, Position, PositionDot
-	//Parameters
-	//PinRecord, CurrentTick
-	class Operation_ReluctorUniversal2x : public IOperation<std::tuple<bool, float, float>, Record*, uint32_t>
+	class Operation_ReluctorUniversal2x : public IOperation<ReluctorResult, Record*, uint32_t>
 	{
 	protected:
+		EmbeddedIOServices::ITimerService *_timerService;
 		float _risingPostion;
 		float _fallingPosition;
 	public:		
-        Operation_ReluctorUniversal2x(float risingPostion, float fallingPosition);
+        Operation_ReluctorUniversal2x(EmbeddedIOServices::ITimerService *, float risingPostion, float fallingPosition);
 
-		std::tuple<bool, float, float> Execute(Record *, uint32_t) override;
+		ReluctorResult Execute(Record *, uint32_t) override;
 
-		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
+		static IOperationBase *Create(const EmbeddedIOServices::EmbeddedIOServiceCollection *embeddedIOServiceCollection, const void *config, unsigned int &sizeOut);
 	};
 }
 #endif
