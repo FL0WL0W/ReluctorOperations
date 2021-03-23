@@ -8,10 +8,10 @@ namespace OperationArchitecture
 
 	std::tuple<bool, float, float> Operation_ReluctorGM24x::Execute(Record *record, uint32_t tick)
 	{
-		uint8_t last = record->Last;
+		uint16_t last = record->Last;
 		if(!record->Frames[last].Valid)
 			return std::tuple<bool, float, float>{false, 0, 0};
-		const uint8_t startingLast = last;
+		const uint16_t startingLast = last;
 		while(tick - record->Frames[last].Tick > 0x80000000)
 		{
 			last = Record::Subtract(last, 1, record->Length);

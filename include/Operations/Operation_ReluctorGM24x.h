@@ -16,7 +16,7 @@ namespace OperationArchitecture
 		static Operation_ReluctorGM24x *_instance;
 	public:
 		std::tuple<bool, float, float> Execute(Record *, uint32_t) override;
-		bool IsLongPulse(Record *, uint8_t frame);
+		bool IsLongPulse(Record *, uint16_t frame);
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 		static Operation_ReluctorGM24x *Construct();
