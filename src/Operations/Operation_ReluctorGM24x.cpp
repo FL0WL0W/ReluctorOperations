@@ -461,7 +461,7 @@ namespace OperationArchitecture
 		return record->Frames[frame].Tick - record->Frames[frameMinus1].Tick > ticksPer7P5Degrees;
 	}
 
-	IOperationBase *Operation_ReluctorGM24x::Create(const EmbeddedIOServices::EmbeddedIOServiceCollection *embeddedIOServiceCollection, const void *config, unsigned int &sizeOut)
+	IOperationBase *Operation_ReluctorGM24x::Create(const void *config, unsigned int &sizeOut, const EmbeddedIOServiceCollection *embeddedIOServiceCollection)
 	{
 		return new Operation_ReluctorGM24x(embeddedIOServiceCollection->TimerService);
 	}

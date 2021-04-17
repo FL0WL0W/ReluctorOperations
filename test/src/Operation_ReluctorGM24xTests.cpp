@@ -23,7 +23,7 @@ namespace UnitTests
 				.WillRepeatedly(Return(5000));
 
 			unsigned int size = 0;
-			_operation = Operation_ReluctorGM24x::Create(&_embeddedIOServiceCollection, 0, size);
+			_operation = Operation_ReluctorGM24x::Create(0, size, &_embeddedIOServiceCollection);
 
 			_record = new Record();
 			_record->Initialize(200);

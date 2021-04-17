@@ -75,7 +75,7 @@ namespace OperationArchitecture
 		return ret;
 	}
 
-	IOperationBase *Operation_ReluctorUniversal2x::Create(const EmbeddedIOServices::EmbeddedIOServiceCollection *embeddedIOServiceCollection, const void *config, unsigned int &sizeOut)
+	IOperationBase *Operation_ReluctorUniversal2x::Create(const void *config, unsigned int &sizeOut, const EmbeddedIOServiceCollection *embeddedIOServiceCollection)
 	{
 		return new Operation_ReluctorUniversal2x(embeddedIOServiceCollection->TimerService, Config::CastAndOffset<float>(config, sizeOut), Config::CastAndOffset<float>(config, sizeOut));
 	}
