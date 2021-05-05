@@ -3,16 +3,14 @@
 #include "Operations/Operation_ReluctorGM24x.h"
 #include "Operations/Operation_ReluctorUniversal2x.h"
 
-using namespace EmbeddedIOServices;
-
 #ifdef RELUCTOROPERATIONFACTORYREGISTER_H
 
 namespace OperationArchitecture
 {
-    void ReluctorOperationFactoryRegister::Register(uint32_t idOffset, OperationFactory *factory, const EmbeddedIOServiceCollection *embeddedIOServiceCollection)
+    void ReluctorOperationFactoryRegister::Register(uint32_t idOffset, OperationFactory *factory)
     {
-        factory->Register(idOffset + 1, new CreateWithParameters<const EmbeddedIOServiceCollection *>(Operation_ReluctorGM24x::Create, embeddedIOServiceCollection));
-        factory->Register(idOffset + 2, new CreateWithParameters<const EmbeddedIOServiceCollection *>(Operation_ReluctorUniversal2x::Create, embeddedIOServiceCollection));
+        factory->Register(idOffset + 1, Operation_ReluctorGM24x::Create);
+        factory->Register(idOffset + 2, Operation_ReluctorUniversal2x::Create);
     }
 }
 

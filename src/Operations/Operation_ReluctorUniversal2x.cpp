@@ -1,13 +1,11 @@
 #include "Operations/Operation_ReluctorUniversal2x.h"
 #include "Config.h"
-using namespace EmbeddedIOServices;
 
 #ifdef OPERATION_RELUCTORUNIVERSAL2X_H
 namespace OperationArchitecture
 {
-	Operation_ReluctorUniversal2x::Operation_ReluctorUniversal2x(ITimerService *timerService, float risingPostion, float fallingPosition)
+	Operation_ReluctorUniversal2x::Operation_ReluctorUniversal2x(float risingPostion, float fallingPosition)
 	{
-		_timerService = timerService;
 		_risingPostion = risingPostion;
 		_fallingPosition = fallingPosition;
 	}
@@ -70,14 +68,14 @@ namespace OperationArchitecture
 		ret.Position = basePosition + (ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot;
 		while(ret.Position > 360)
 			ret.Position -= 360;
-		ret.PositionDot *= _timerService->GetTicksPerSecond();
+		ret.PositionDot *= record->TicksPerSecond;
 		ret.Synced = true;
 		return ret;
 	}
 
-	IOperationBase *Operation_ReluctorUniversal2x::Create(const void *config, unsigned int &sizeOut, const EmbeddedIOServiceCollection *embeddedIOServiceCollection)
+	IOperationBase *Operation_ReluctorUniversal2x::Create(const void *config, unsigned int &sizeOut)
 	{
-		return new Operation_ReluctorUniversal2x(embeddedIOServiceCollection->TimerService, Config::CastAndOffset<float>(config, sizeOut), Config::CastAndOffset<float>(config, sizeOut));
+		return new Operation_ReluctorUniversal2x(Config::CastAndOffset<float>(config, sizeOut), Config::CastAndOffset<float>(config, sizeOut));
 	}
 }
 #endif

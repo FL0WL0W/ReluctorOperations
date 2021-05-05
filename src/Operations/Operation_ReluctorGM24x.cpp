@@ -1,14 +1,8 @@
 #include "Operations/Operation_ReluctorGM24x.h"
-using namespace EmbeddedIOServices;
 
 #ifdef OPERATION_RELUCTORGM24X_H
 namespace OperationArchitecture
 {
-	Operation_ReluctorGM24x::Operation_ReluctorGM24x(ITimerService *timerService)
-	{
-		_timerService = timerService;
-	}
-
 	ReluctorResult Operation_ReluctorGM24x::Execute(Record *record, uint32_t tick)
 	{
 		ReluctorResult ret;
@@ -442,7 +436,7 @@ namespace OperationArchitecture
 		ret.Position = baseDegree + (ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot;
 		while(ret.Position > 360)
 			ret.Position -= 360;
-		ret.PositionDot *= _timerService->GetTicksPerSecond();
+		ret.PositionDot *= record->TicksPerSecond;
 		ret.Synced = true;
 		return ret;
 	}
@@ -461,9 +455,9 @@ namespace OperationArchitecture
 		return record->Frames[frame].Tick - record->Frames[frameMinus1].Tick > ticksPer7P5Degrees;
 	}
 
-	IOperationBase *Operation_ReluctorGM24x::Create(const void *config, unsigned int &sizeOut, const EmbeddedIOServiceCollection *embeddedIOServiceCollection)
+	IOperationBase *Operation_ReluctorGM24x::Create(const void *config, unsigned int &sizeOut)
 	{
-		return new Operation_ReluctorGM24x(embeddedIOServiceCollection->TimerService);
+		return new Operation_ReluctorGM24x();
 	}
 }
 #endif

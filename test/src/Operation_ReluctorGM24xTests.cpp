@@ -1,9 +1,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "Operations/Operation_ReluctorGM24x.h"
-#include "MockTimerService.h"
 using namespace testing;
-using namespace EmbeddedIOServices;
 using namespace OperationArchitecture;
 
 namespace UnitTests
@@ -13,19 +11,14 @@ namespace UnitTests
 		protected:
 		IOperationBase *_operation;
 		Record *_record;
-		MockTimerService _timerService;
-		EmbeddedIOServiceCollection _embeddedIOServiceCollection;
 
 		Operation_ReluctorGM24xTests() 
 		{			
-			_embeddedIOServiceCollection.TimerService = &_timerService;
-			EXPECT_CALL(_timerService, GetTicksPerSecond())
-				.WillRepeatedly(Return(5000));
-
 			unsigned int size = 0;
-			_operation = Operation_ReluctorGM24x::Create(0, size, &_embeddedIOServiceCollection);
+			_operation = Operation_ReluctorGM24x::Create(0, size);
 
 			_record = new Record();
+			_record->TicksPerSecond = 5000;
 			_record->Initialize(200);
 			_record->Frames[0].State = false;
 			_record->Frames[0].Valid = true;
