@@ -11,7 +11,7 @@ namespace OperationArchitecture
         float Position;
         float PositionDot;
 		uint32_t CalculatedTick;
-        bool Synced;
+        bool Synced : 1;
         
 		constexpr float GetRPM()
 		{
