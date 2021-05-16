@@ -15,7 +15,7 @@ namespace OperationArchitecture
         
 		constexpr float GetRPM()
 		{
-			return PositionDot / 60;
+			return PositionDot / 6;
 		}
     });
 }
