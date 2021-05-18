@@ -1,7 +1,6 @@
 #include "Operations/IOperation.h"
 #include "Operations/Operation_DigitalPinRecord.h"
 #include "ReluctorResult.h"
-#include "Packed.h"
 #include "Interpolation.h"
 
 #ifndef OPERATION_RELUCTORUNIVERSAL2X_H
@@ -18,7 +17,7 @@ namespace OperationArchitecture
 
 		ReluctorResult Execute(Record *, uint32_t) override;
 
-		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
+		static IOperationBase *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

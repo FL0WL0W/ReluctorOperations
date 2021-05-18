@@ -73,7 +73,7 @@ namespace OperationArchitecture
 		return ret;
 	}
 
-	IOperationBase *Operation_ReluctorUniversal2x::Create(const void *config, unsigned int &sizeOut)
+	IOperationBase *Operation_ReluctorUniversal2x::Create(const void *config, size_t &sizeOut)
 	{
 		return new Operation_ReluctorUniversal2x(Config::CastAndOffset<float>(config, sizeOut), Config::CastAndOffset<float>(config, sizeOut));
 	}

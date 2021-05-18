@@ -1,12 +1,10 @@
-
-#include "Packed.h"
 #include "stdint.h"
 
 #ifndef RELUCTORRESULT_H
 #define RELUCTORRESULT_H
 namespace OperationArchitecture
 {
-    PACK(struct ReluctorResult
+    struct ReluctorResult
     {
         float Position;
         float PositionDot;
@@ -17,6 +15,6 @@ namespace OperationArchitecture
 		{
 			return PositionDot / 6;
 		}
-    });
+    };
 }
 #endif
