@@ -1,5 +1,4 @@
 #include "Operations/ReluctorOperationFactoryRegister.h"
-#include "CreateWithParameters.h"
 #include "Operations/Operation_ReluctorGM24x.h"
 #include "Operations/Operation_ReluctorUniversal2x.h"
 
