@@ -13,7 +13,7 @@ namespace OperationArchitecture
 		ReluctorResult Execute(Record *, uint32_t) override;
 		bool IsLongPulse(Record *, uint16_t frame);
 
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+		static Operation_ReluctorGM24x Instance;
 	};
 }
 #endif

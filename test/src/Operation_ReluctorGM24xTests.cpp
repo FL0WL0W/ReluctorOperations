@@ -15,7 +15,7 @@ namespace UnitTests
 		Operation_ReluctorGM24xTests() 
 		{			
 			size_t size = 0;
-			_operation = Operation_ReluctorGM24x::Create(0, size);
+			_operation = &Operation_ReluctorGM24x::Instance;
 
 			_record = new Record();
 			_record->TicksPerSecond = 5000;

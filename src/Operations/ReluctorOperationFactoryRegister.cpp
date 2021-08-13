@@ -8,7 +8,7 @@ namespace OperationArchitecture
 {
     void ReluctorOperationFactoryRegister::Register(uint32_t idOffset, OperationFactory *factory)
     {
-        factory->Register(idOffset + 1, Operation_ReluctorGM24x::Create);
+        factory->Register(idOffset + 1, &Operation_ReluctorGM24x::Instance);
         factory->Register(idOffset + 2, Operation_ReluctorUniversal2x::Create);
     }
 }
