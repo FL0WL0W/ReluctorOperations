@@ -49,6 +49,7 @@ namespace OperationArchitecture
 
 		if(IsLongPulse(record, last))
 		{
+			pulseDegree = 12;
 			if(IsLongPulse(record, lastMinus2))
 			{
 				if(IsLongPulse(record, lastMinus4))
@@ -235,12 +236,10 @@ namespace OperationArchitecture
 					}
 				}
 			}
-			pulseDegree = baseDegree % 15;
-			if(pulseDegree == 0)
-				pulseDegree = 12;
 		}
 		else
 		{
+			pulseDegree = 3;
 			if(IsLongPulse(record, lastMinus2))
 			{
 				if(IsLongPulse(record, lastMinus4))
@@ -427,9 +426,6 @@ namespace OperationArchitecture
 					}
 				}
 			}
-			pulseDegree = baseDegree % 15;
-			if(pulseDegree == 0)
-				pulseDegree = 3;
 		}
 
 		ret.PositionDot = static_cast<float>(pulseDegree) / (record->Frames[last].Tick - record->Frames[lastMinus1].Tick);
