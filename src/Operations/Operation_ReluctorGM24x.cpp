@@ -10,7 +10,7 @@ namespace OperationArchitecture
 		ret.Synced = false;
 		uint16_t last = record->Last;
 		if(!record->Frames[last].Valid)
-			return ret;;
+			return ret;
 		const uint16_t startingLast = last;
 		while(ret.CalculatedTick - record->Frames[last].Tick > 0x80000000)
 		{
@@ -21,22 +21,22 @@ namespace OperationArchitecture
 				return ret;
 		}
 
-		uint16_t lastMinus8 =  Record::Subtract(last, 8, record->Length);
+		const uint16_t lastMinus8 =  Record::Subtract(last, 8, record->Length);
 		if(!record->Frames[lastMinus8].Valid)
 			return ret;
 
-		uint16_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
-		uint16_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
-		uint16_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
-		uint16_t lastMinus6 =  Record::Subtract(last, 6, record->Length);
+		const uint16_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
+		const uint16_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
+		const uint16_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
+		const uint16_t lastMinus6 =  Record::Subtract(last, 6, record->Length);
 		
 		uint16_t lastDown = last;
 		if(record->Frames[last].State)
 			lastDown = lastMinus1;
-		uint16_t lastDownMinus2 =  Record::Subtract(lastDown, 2, record->Length);
-		uint16_t lastDownMinus4 =  Record::Subtract(lastDown, 4, record->Length);
+		const uint16_t lastDownMinus2 =  Record::Subtract(lastDown, 2, record->Length);
+		const uint16_t lastDownMinus4 =  Record::Subtract(lastDown, 4, record->Length);
 		const float delta1 = static_cast<float>(tick - record->Frames[lastDown].Tick);
-		const float delta2 = static_cast<float>(record->Frames[last].Tick - record->Frames[lastDownMinus2].Tick);
+		const float delta2 = static_cast<float>(record->Frames[lastDown].Tick - record->Frames[lastDownMinus2].Tick);
 		if(delta1 * 0.5 > delta2)
 			return ret;
 		const float delta3 = static_cast<float>(record->Frames[lastDownMinus2].Tick - record->Frames[lastDownMinus4].Tick);
@@ -45,11 +45,9 @@ namespace OperationArchitecture
 			return ret;
 
 		uint16_t baseDegree = 0;
-		uint16_t pulseDegree = 0;
 
 		if(IsLongPulse(record, last))
 		{
-			pulseDegree = 12;
 			if(IsLongPulse(record, lastMinus2))
 			{
 				if(IsLongPulse(record, lastMinus4))
@@ -119,7 +117,7 @@ namespace OperationArchitecture
 						{
 							//long-long-short-long-short
 							//wtf?
-							return ret;;
+							return ret;
 						}
 					}
 					else
@@ -167,7 +165,7 @@ namespace OperationArchitecture
 						{
 							//long-short-long-long-short
 							//wtf?
-							return ret;;
+							return ret;
 						}
 					}
 					else
@@ -176,7 +174,7 @@ namespace OperationArchitecture
 						{
 							//long-short-long-short-long
 							//wtf?
-							return ret;;
+							return ret;
 						}
 						else
 						{
@@ -208,7 +206,7 @@ namespace OperationArchitecture
 						{
 							//long-short-short-long-short
 							//wtf?
-							return ret;;
+							return ret;
 						}
 					}
 					else
@@ -239,7 +237,6 @@ namespace OperationArchitecture
 		}
 		else
 		{
-			pulseDegree = 3;
 			if(IsLongPulse(record, lastMinus2))
 			{
 				if(IsLongPulse(record, lastMinus4))
@@ -273,7 +270,7 @@ namespace OperationArchitecture
 						{
 							//short-long-long-short-long
 							//wtf?
-							return ret;;
+							return ret;
 						}
 						else
 						{
@@ -295,7 +292,7 @@ namespace OperationArchitecture
 						{
 							//short-long-short-long-long
 							//wtf?
-							return ret;;
+							return ret;
 						}
 						else
 						{
@@ -314,7 +311,7 @@ namespace OperationArchitecture
 						{
 							//short-long-short-short-long
 							//wtf?
-							return ret;;
+							return ret;
 						}
 						else
 						{
@@ -372,7 +369,7 @@ namespace OperationArchitecture
 						{
 							//short-short-long-short-short
 							//wtf?
-							return ret;;
+							return ret;
 						}
 					}
 				}
@@ -428,8 +425,21 @@ namespace OperationArchitecture
 			}
 		}
 
-		ret.PositionDot = static_cast<float>(pulseDegree) / (record->Frames[last].Tick - record->Frames[lastMinus1].Tick);
-		ret.Position = baseDegree + (ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot;
+		uint32_t delta = record->Frames[lastDown].Tick - record->Frames[lastDownMinus4].Tick;
+		uint16_t deltaDegrees = 30;
+		for(uint8_t lastFrame = 48; delta > 4; lastFrame -= 2)
+		{
+			const uint16_t lastDownMinus =  Record::Subtract(lastDown, lastFrame, record->Length);
+			if(record->Frames[lastDownMinus].Valid)
+			{
+				delta = record->Frames[lastDown].Tick - record->Frames[lastDownMinus].Tick;
+				deltaDegrees = (lastFrame / 2) * 15;
+				break;
+			}
+		}
+
+		ret.PositionDot = static_cast<float>(deltaDegrees) / delta;
+		ret.Position = baseDegree + ((ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot);
 		while(ret.Position > 360)
 			ret.Position -= 360;
 		ret.PositionDot *= record->TicksPerSecond;
@@ -442,13 +452,13 @@ namespace OperationArchitecture
 		if(record->Frames[frame].State)
 			frame = Record::Subtract(frame, 1, record->Length);
 
-		uint16_t frameMinus1 = Record::Subtract(frame, 1, record->Length);
-		uint16_t frameMinus2 = Record::Subtract(frame, 2, record->Length);
+		const uint16_t frameMinus1 = Record::Subtract(frame, 1, record->Length);
+		const uint16_t frameMinus2 = Record::Subtract(frame, 2, record->Length);
 
-		uint32_t ticksPer15Degrees = record->Frames[frame].Tick - record->Frames[frameMinus2].Tick;
-		uint32_t ticksPer7P5Degrees = ticksPer15Degrees / 2;
+		const uint32_t deltaPulse = record->Frames[frame].Tick - record->Frames[frameMinus1].Tick;
+		const uint32_t delta15degrees = record->Frames[frame].Tick - record->Frames[frameMinus2].Tick;
 
-		return record->Frames[frame].Tick - record->Frames[frameMinus1].Tick > ticksPer7P5Degrees;
+		return deltaPulse > (delta15degrees / 2);
 	}
 
 	Operation_ReluctorGM24x Operation_ReluctorGM24x::Instance;
