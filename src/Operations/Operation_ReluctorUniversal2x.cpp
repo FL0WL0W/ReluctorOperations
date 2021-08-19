@@ -1,6 +1,8 @@
 #include "Operations/Operation_ReluctorUniversal2x.h"
 #include "Config.h"
 
+using namespace EmbeddedIOServices;
+
 #ifdef OPERATION_RELUCTORUNIVERSAL2X_H
 namespace OperationArchitecture
 {
@@ -10,7 +12,7 @@ namespace OperationArchitecture
 		_fallingPosition = fallingPosition;
 	}
 
-	ReluctorResult Operation_ReluctorUniversal2x::Execute(Record *record, uint32_t tick)
+	ReluctorResult Operation_ReluctorUniversal2x::Execute(Record *record, tick_t tick)
 	{
 		ReluctorResult ret;
 		ret.CalculatedTick = tick;
