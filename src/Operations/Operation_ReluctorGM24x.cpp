@@ -14,7 +14,7 @@ namespace OperationArchitecture
 		if(!record->Frames[last].Valid)
 			return ret;
 		const uint16_t startingLast = last;
-		while(ret.CalculatedTick - record->Frames[last].Tick > 0x80000000)
+		while(ITimerService::TickLessThanTick(ret.CalculatedTick, record->Frames[last].Tick))
 		{
 			last = Record::Subtract(last, 1, record->Length);
 			if(!record->Frames[last].Valid)
