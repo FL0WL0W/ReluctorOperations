@@ -30,14 +30,9 @@ namespace OperationArchitecture
 				return ret;
 		}
 
-		//require 1 full revolution for Postion Dot calculation
-		const frameindex_t lastMinus1Revolution = Record::Subtract(last, (_config->NumberOfTeeth - _config->NumberOfTeethMissing) * 2, record->Length);
-		if(!record->Frames[lastMinus1Revolution].Valid)
-			return ret;
-
-		//line up with period capture
+		//line up with falling edge
 		frameindex_t firstToothEdgeFramesAgo = 0;
-		if(record->Frames[last].State != _config->FirstToothPositionOnRising)
+		if(record->Frames[last].State)
 			firstToothEdgeFramesAgo++;
 
 		//find missing tooth
@@ -51,7 +46,7 @@ namespace OperationArchitecture
 			const tick_t previousPulse = record->Frames[firstToothEdgeMinus2].Tick - record->Frames[firstToothEdgeMinus4].Tick;
 			
 			//if these pulses are not valid
-			if(!record->Frames[firstToothEdgeMinus4].Valid || firstToothEdgeFramesAgo >= (record->Length + 4 + (record->Last - startingLast)))
+			if(!record->Frames[firstToothEdgeMinus4].Valid || firstToothEdgeFramesAgo >= (record->Length + 4 + Record::Subtract(record->Last, startingLast, record->Length)))
 				return ret;
 
 			//if first pulse is greater than half the amount of missing teeth, then it is the first pulse
@@ -60,6 +55,19 @@ namespace OperationArchitecture
 
 			firstToothEdgeFramesAgo+=2;
 		}
+
+		//throw out the first tooth as the missing tooth triggers differently
+		if(firstToothEdgeFramesAgo < 2)
+		{
+			firstToothEdgeFramesAgo++;
+			last = Record::Subtract(last, firstToothEdgeFramesAgo, record->Length);
+			firstToothEdgeFramesAgo = (_config->NumberOfTeeth - _config->NumberOfTeethMissing) * 2;
+		}
+
+		//require 1 full revolution for Postion Dot calculation
+		const frameindex_t lastMinus1Revolution = Record::Subtract(last, (_config->NumberOfTeeth - _config->NumberOfTeethMissing) * 2, record->Length);
+		if(!record->Frames[lastMinus1Revolution].Valid)
+			return ret;
 
 		const position_t degreesPerPeriod = static_cast<position_t>(360) / _config->NumberOfTeeth;
 		//								number of periods			degreesPerPeriod					add tooth width if on odd tooth						add first tooth position

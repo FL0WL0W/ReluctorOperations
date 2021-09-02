@@ -16,7 +16,6 @@ namespace OperationArchitecture
 			Config::AlignAndAddSize<position_t>(s);
 			Config::AlignAndAddSize<uint8_t>(s);
 			Config::AlignAndAddSize<uint8_t>(s);
-			Config::AlignAndAddSize<bool>(s);
 			return s;
 		}
 
@@ -24,7 +23,6 @@ namespace OperationArchitecture
 		const position_t ToothWidth;
 		const uint8_t NumberOfTeeth;
 		const uint8_t NumberOfTeethMissing;
-		const bool FirstToothPositionOnRising;
 	};
 
 	class Operation_ReluctorUniversalMissingTeeth : public IOperation<ReluctorResult, Record*, EmbeddedIOServices::tick_t>
