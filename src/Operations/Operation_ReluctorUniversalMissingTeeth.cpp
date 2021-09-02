@@ -33,7 +33,18 @@ namespace OperationArchitecture
 		//line up with falling edge
 		frameindex_t firstToothEdgeFramesAgo = 0;
 		if(record->Frames[last].State)
-			firstToothEdgeFramesAgo++;
+		{
+			if(_config->ToothWidth != 0)
+			{
+				last = Record::Subtract(last, 2, record->Length);
+				firstToothEdgeFramesAgo++;
+			}
+			else
+			{
+				last = Record::Subtract(last, 1, record->Length);
+			}
+			
+		}
 
 		//find missing tooth
 		while(true)
@@ -56,12 +67,22 @@ namespace OperationArchitecture
 			firstToothEdgeFramesAgo+=2;
 		}
 
-		//throw out the first tooth as the missing tooth triggers differently
-		if(firstToothEdgeFramesAgo < 2)
+		//throw out the teeth around the missing tooth as they are influenced by the missing tooth
+		const bool numberOfTeethGreaterThan10 = (_config->NumberOfTeeth - _config->NumberOfTeethMissing) > 6;
+		if(firstToothEdgeFramesAgo < (numberOfTeethGreaterThan10? 4 : 2))
 		{
-			firstToothEdgeFramesAgo++;
-			last = Record::Subtract(last, firstToothEdgeFramesAgo, record->Length);
-			firstToothEdgeFramesAgo = (_config->NumberOfTeeth - _config->NumberOfTeethMissing) * 2;
+			last = Record::Subtract(last, firstToothEdgeFramesAgo + (numberOfTeethGreaterThan10? 2 : 0), record->Length);
+			firstToothEdgeFramesAgo = (_config->NumberOfTeeth - _config->NumberOfTeethMissing) * 2 - (numberOfTeethGreaterThan10? 2 : 0);
+		}
+		else
+		{
+			const frameindex_t endingTooth = (_config->NumberOfTeeth - _config->NumberOfTeethMissing) * 2 - 3;
+			if(numberOfTeethGreaterThan10 && firstToothEdgeFramesAgo > endingTooth)
+			{
+				const frameindex_t teethOver = firstToothEdgeFramesAgo - endingTooth;
+				last = Record::Subtract(last, teethOver, record->Length);
+				firstToothEdgeFramesAgo -= teethOver;
+			}
 		}
 
 		//require 1 full revolution for Postion Dot calculation
@@ -71,7 +92,7 @@ namespace OperationArchitecture
 
 		const position_t degreesPerPeriod = static_cast<position_t>(360) / _config->NumberOfTeeth;
 		//								number of periods			degreesPerPeriod					add tooth width if on odd tooth						add first tooth position
-		const position_t basePosition = ((firstToothEdgeFramesAgo / 2) * degreesPerPeriod) + (firstToothEdgeFramesAgo % 2 == 1? _config->ToothWidth : 0) + _config->FirstToothPosition;
+		const position_t basePosition = ((firstToothEdgeFramesAgo / 2) * degreesPerPeriod) + ((firstToothEdgeFramesAgo % 2 == 1)? _config->ToothWidth : 0) + _config->FirstToothPosition;
 
 		//average position dot over the last revolution
 		ret.PositionDot = static_cast<position_t>(360) / (record->Frames[last].Tick - record->Frames[lastMinus1Revolution].Tick);
