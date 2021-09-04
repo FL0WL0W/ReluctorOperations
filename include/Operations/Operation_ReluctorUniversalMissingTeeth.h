@@ -10,7 +10,7 @@ namespace OperationArchitecture
 {
 	struct Operation_ReluctorUniversalMissingTeethConfig
 	{
-		constexpr const size_t Size() const
+		size_t Size() const
 		{
 			size_t s = sizeof(position_t);
 			Config::AlignAndAddSize<position_t>(s);
