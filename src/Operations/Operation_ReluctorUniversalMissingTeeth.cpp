@@ -30,6 +30,22 @@ namespace OperationArchitecture
 				return ret;
 		}
 
+		frameindex_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
+		frameindex_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
+		frameindex_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
+
+		if(!record->Frames[lastMinus2].Valid || !record->Frames[lastMinus4].Valid)
+			return ret;
+
+		//ensure stability
+		// const tick_t delta1 = tick - record->Frames[last].Tick;
+		// const tick_t delta2 = record->Frames[last].Tick - record->Frames[lastMinus2].Tick;
+		// if(delta1 > (delta2 * 2))
+		// 	return ret;
+		// const tick_t delta3 = record->Frames[lastMinus2].Tick - record->Frames[lastMinus4].Tick;
+		// if((delta2 * 2) < delta3 || (delta3 * 2) < delta2)
+		// 	return ret;
+
 		//line up with falling edge
 		frameindex_t firstToothEdgeFramesAgo = 0;
 		if(record->Frames[last].State)
