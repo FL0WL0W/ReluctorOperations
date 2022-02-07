@@ -6,16 +6,16 @@
 
 #ifndef OPERATION_RELUCTORUNIVERSALMISSINGTEETH_H
 #define OPERATION_RELUCTORUNIVERSALMISSINGTEETH_H
-namespace OperationArchitecture
+namespace ReluctorOperations
 {
 	struct Operation_ReluctorUniversalMissingTeethConfig
 	{
 		size_t Size() const
 		{
 			size_t s = sizeof(position_t);
-			Config::AlignAndAddSize<position_t>(s);
-			Config::AlignAndAddSize<uint8_t>(s);
-			Config::AlignAndAddSize<uint8_t>(s);
+			OperationArchitecture::Config::AlignAndAddSize<position_t>(s);
+			OperationArchitecture::Config::AlignAndAddSize<uint8_t>(s);
+			OperationArchitecture::Config::AlignAndAddSize<uint8_t>(s);
 			return s;
 		}
 
@@ -25,16 +25,16 @@ namespace OperationArchitecture
 		const uint8_t NumberOfTeethMissing;
 	};
 
-	class Operation_ReluctorUniversalMissingTeeth : public IOperation<ReluctorResult, Record*, EmbeddedIOServices::tick_t>
+	class Operation_ReluctorUniversalMissingTeeth : public OperationArchitecture::IOperation<ReluctorResult, EmbeddedIOOperations::Record*, EmbeddedIOServices::tick_t>
 	{
 	protected:
 		const Operation_ReluctorUniversalMissingTeethConfig * const _config;
 	public:		
         Operation_ReluctorUniversalMissingTeeth(const Operation_ReluctorUniversalMissingTeethConfig * const config);
 
-		ReluctorResult Execute(Record *, EmbeddedIOServices::tick_t) override;
+		ReluctorResult Execute(EmbeddedIOOperations::Record *, EmbeddedIOServices::tick_t) override;
 
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+		static OperationArchitecture::IOperationBase *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

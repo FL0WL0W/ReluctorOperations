@@ -2,9 +2,11 @@
 #include "Config.h"
 
 using namespace EmbeddedIOServices;
+using namespace OperationArchitecture;
+using namespace EmbeddedIOOperations;
 
 #ifdef OPERATION_RELUCTORUNIVERSALMISSINGTEETH_H
-namespace OperationArchitecture
+namespace ReluctorOperations
 {
 	Operation_ReluctorUniversalMissingTeeth::Operation_ReluctorUniversalMissingTeeth(const Operation_ReluctorUniversalMissingTeethConfig * const config) :
 		_config(config)

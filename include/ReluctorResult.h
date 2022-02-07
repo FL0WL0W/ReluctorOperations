@@ -3,7 +3,7 @@
 
 #ifndef RELUCTORRESULT_H
 #define RELUCTORRESULT_H
-namespace OperationArchitecture
+namespace ReluctorOperations
 {
     typedef float position_t;
     typedef float positiondot_t;

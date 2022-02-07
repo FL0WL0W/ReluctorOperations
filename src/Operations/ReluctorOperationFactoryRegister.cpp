@@ -3,9 +3,10 @@
 #include "Operations/Operation_ReluctorUniversal1x.h"
 #include "Operations/Operation_ReluctorUniversalMissingTeeth.h"
 
-#ifdef RELUCTOROPERATIONFACTORYREGISTER_H
+using namespace OperationArchitecture;
 
-namespace OperationArchitecture
+#ifdef RELUCTOROPERATIONFACTORYREGISTER_H
+namespace ReluctorOperations
 {
     void ReluctorOperationFactoryRegister::Register(uint32_t idOffset, OperationFactory *factory)
     {
@@ -14,5 +15,4 @@ namespace OperationArchitecture
         factory->Register(idOffset + 3, Operation_ReluctorUniversalMissingTeeth::Create);
     }
 }
-
 #endif

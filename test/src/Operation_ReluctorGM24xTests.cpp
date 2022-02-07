@@ -1,8 +1,11 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "Operations/Operation_ReluctorGM24x.h"
+
 using namespace testing;
 using namespace OperationArchitecture;
+using namespace EmbeddedIOOperations;
+using namespace ReluctorOperations;
 
 namespace UnitTests
 {

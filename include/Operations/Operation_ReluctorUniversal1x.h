@@ -5,9 +5,9 @@
 
 #ifndef OPERATION_RELUCTORUNIVERSAL1X_H
 #define OPERATION_RELUCTORUNIVERSAL1X_H
-namespace OperationArchitecture
+namespace ReluctorOperations
 {
-	class Operation_ReluctorUniversal1x : public IOperation<ReluctorResult, Record*, EmbeddedIOServices::tick_t>
+	class Operation_ReluctorUniversal1x : public OperationArchitecture::IOperation<ReluctorResult, EmbeddedIOOperations::Record*, EmbeddedIOServices::tick_t>
 	{
 	protected:
 		const position_t _risingPostion;
@@ -15,9 +15,9 @@ namespace OperationArchitecture
 	public:		
         Operation_ReluctorUniversal1x(const position_t risingPostion, const position_t fallingPosition);
 
-		ReluctorResult Execute(Record *, EmbeddedIOServices::tick_t) override;
+		ReluctorResult Execute(EmbeddedIOOperations::Record *, EmbeddedIOServices::tick_t) override;
 
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+		static OperationArchitecture::IOperationBase *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

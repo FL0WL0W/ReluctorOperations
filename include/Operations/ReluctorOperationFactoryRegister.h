@@ -2,12 +2,12 @@
 
 #ifndef RELUCTOROPERATIONFACTORYREGISTER_H
 #define RELUCTOROPERATIONFACTORYREGISTER_H
-namespace OperationArchitecture
+namespace ReluctorOperations
 {
 	class ReluctorOperationFactoryRegister
 	{
 		public:
-		static void Register(uint32_t idOffset, OperationFactory *factory);
+		static void Register(uint32_t idOffset, OperationArchitecture::OperationFactory *factory);
 	};
 }
 #endif

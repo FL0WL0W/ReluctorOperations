@@ -2,9 +2,11 @@
 #include "Config.h"
 
 using namespace EmbeddedIOServices;
+using namespace OperationArchitecture;
+using namespace EmbeddedIOOperations;
 
 #ifdef OPERATION_RELUCTORUNIVERSAL1X_H
-namespace OperationArchitecture
+namespace ReluctorOperations
 {
 	Operation_ReluctorUniversal1x::Operation_ReluctorUniversal1x(const position_t risingPostion, const position_t fallingPosition) :
 		_risingPostion(risingPostion),

@@ -1,9 +1,11 @@
 #include "Operations/Operation_ReluctorGM24x.h"
 
 using namespace EmbeddedIOServices;
+using namespace OperationArchitecture;
+using namespace EmbeddedIOOperations;
 
 #ifdef OPERATION_RELUCTORGM24X_H
-namespace OperationArchitecture
+namespace ReluctorOperations
 {
 	ReluctorResult Operation_ReluctorGM24x::Execute(Record *record, tick_t tick)
 	{
