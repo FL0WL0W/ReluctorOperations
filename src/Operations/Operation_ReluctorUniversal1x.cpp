@@ -13,7 +13,7 @@ namespace ReluctorOperations
 		_fallingPosition(fallingPosition)
 	{ }
 
-	ReluctorResult Operation_ReluctorUniversal1x::Execute(Record *record, tick_t tick)
+	ReluctorResult Operation_ReluctorUniversal1x::Execute(Record<bool> *record, tick_t tick)
 	{
 		ReluctorResult ret;
 		ret.CalculatedTick = tick;
@@ -24,16 +24,16 @@ namespace ReluctorOperations
 		const frameindex_t startingLast = last;
 		while(ITimerService::TickLessThanTick(ret.CalculatedTick, record->Frames[last].Tick))
 		{
-			last = Record::Subtract(last, 1, record->Length);
+			last = Record<bool>::Subtract(last, 1, record->Length);
 			if(!record->Frames[last].Valid)
 				return ret;
 			if(startingLast == last)
 				return ret;
 		}
 
-		frameindex_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
-		frameindex_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
-		frameindex_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
+		frameindex_t lastMinus1 =  Record<bool>::Subtract(last, 1, record->Length);
+		frameindex_t lastMinus2 =  Record<bool>::Subtract(last, 2, record->Length);
+		frameindex_t lastMinus4 =  Record<bool>::Subtract(last, 4, record->Length);
 
 		if(!record->Frames[lastMinus2].Valid || !record->Frames[lastMinus4].Valid)
 			return ret;

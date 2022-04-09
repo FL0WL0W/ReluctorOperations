@@ -12,7 +12,7 @@ namespace ReluctorOperations
 		_config(config)
 	{ }
 
-	ReluctorResult Operation_ReluctorUniversalMissingTeeth::Execute(Record *record, tick_t tick)
+	ReluctorResult Operation_ReluctorUniversalMissingTeeth::Execute(Record<bool> *record, tick_t tick)
 	{
 		ReluctorResult ret;
 		ret.CalculatedTick = tick;
@@ -25,16 +25,16 @@ namespace ReluctorOperations
 		const frameindex_t startingLast = last;
 		while(ITimerService::TickLessThanTick(ret.CalculatedTick, record->Frames[last].Tick))
 		{
-			last = Record::Subtract(last, 1, record->Length);
+			last = Record<bool>::Subtract(last, 1, record->Length);
 			if(!record->Frames[last].Valid)
 				return ret;
 			if(startingLast == last)
 				return ret;
 		}
 
-		frameindex_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
-		frameindex_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
-		frameindex_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
+		frameindex_t lastMinus1 =  Record<bool>::Subtract(last, 1, record->Length);
+		frameindex_t lastMinus2 =  Record<bool>::Subtract(last, 2, record->Length);
+		frameindex_t lastMinus4 =  Record<bool>::Subtract(last, 4, record->Length);
 
 		if(!record->Frames[lastMinus2].Valid || !record->Frames[lastMinus4].Valid)
 			return ret;
@@ -54,12 +54,12 @@ namespace ReluctorOperations
 		{
 			if(_config->ToothWidth != 0)
 			{
-				last = Record::Subtract(last, 2, record->Length);
+				last = Record<bool>::Subtract(last, 2, record->Length);
 				firstToothEdgeFramesAgo++;
 			}
 			else
 			{
-				last = Record::Subtract(last, 1, record->Length);
+				last = Record<bool>::Subtract(last, 1, record->Length);
 			}
 			
 		}
@@ -67,15 +67,15 @@ namespace ReluctorOperations
 		//find missing tooth
 		while(true)
 		{
-			const frameindex_t firstToothEdge = Record::Subtract(last, firstToothEdgeFramesAgo, record->Length);
-			const frameindex_t firstToothEdgeMinus2 = Record::Subtract(last, firstToothEdgeFramesAgo + 2, record->Length);
-			const frameindex_t firstToothEdgeMinus4 = Record::Subtract(last, firstToothEdgeFramesAgo + 4, record->Length);
+			const frameindex_t firstToothEdge = Record<bool>::Subtract(last, firstToothEdgeFramesAgo, record->Length);
+			const frameindex_t firstToothEdgeMinus2 = Record<bool>::Subtract(last, firstToothEdgeFramesAgo + 2, record->Length);
+			const frameindex_t firstToothEdgeMinus4 = Record<bool>::Subtract(last, firstToothEdgeFramesAgo + 4, record->Length);
 
 			const tick_t firstToothPulse = record->Frames[firstToothEdge].Tick - record->Frames[firstToothEdgeMinus2].Tick;
 			const tick_t previousPulse = record->Frames[firstToothEdgeMinus2].Tick - record->Frames[firstToothEdgeMinus4].Tick;
 			
 			//if these pulses are not valid
-			if(!record->Frames[firstToothEdgeMinus4].Valid || firstToothEdgeFramesAgo >= (record->Length + 4 + Record::Subtract(record->Last, startingLast, record->Length)))
+			if(!record->Frames[firstToothEdgeMinus4].Valid || firstToothEdgeFramesAgo >= (record->Length + 4 + Record<bool>::Subtract(record->Last, startingLast, record->Length)))
 				return ret;
 
 			//if first pulse is greater than half the amount of missing teeth, then it is the first pulse
@@ -89,7 +89,7 @@ namespace ReluctorOperations
 		const bool numberOfTeethGreaterThan10 = (_config->NumberOfTeeth - _config->NumberOfTeethMissing) > 6;
 		if(firstToothEdgeFramesAgo < (numberOfTeethGreaterThan10? 4 : 2))
 		{
-			last = Record::Subtract(last, firstToothEdgeFramesAgo + (numberOfTeethGreaterThan10? 2 : 0), record->Length);
+			last = Record<bool>::Subtract(last, firstToothEdgeFramesAgo + (numberOfTeethGreaterThan10? 2 : 0), record->Length);
 			firstToothEdgeFramesAgo = (_config->NumberOfTeeth - _config->NumberOfTeethMissing) * 2 - (numberOfTeethGreaterThan10? 2 : 0);
 		}
 		else
@@ -98,13 +98,13 @@ namespace ReluctorOperations
 			if(numberOfTeethGreaterThan10 && firstToothEdgeFramesAgo > endingTooth)
 			{
 				const frameindex_t teethOver = firstToothEdgeFramesAgo - endingTooth;
-				last = Record::Subtract(last, teethOver, record->Length);
+				last = Record<bool>::Subtract(last, teethOver, record->Length);
 				firstToothEdgeFramesAgo -= teethOver;
 			}
 		}
 
 		//require 1 full revolution for Postion Dot calculation
-		const frameindex_t lastMinus1Revolution = Record::Subtract(last, (_config->NumberOfTeeth - _config->NumberOfTeethMissing) * 2, record->Length);
+		const frameindex_t lastMinus1Revolution = Record<bool>::Subtract(last, (_config->NumberOfTeeth - _config->NumberOfTeethMissing) * 2, record->Length);
 		if(!record->Frames[lastMinus1Revolution].Valid)
 			return ret;
 

@@ -13,14 +13,14 @@ namespace UnitTests
 	{
 		protected:
 		IOperationBase *_operation;
-		Record *_record;
+		Record<bool> *_record;
 
 		Operation_ReluctorGM24xTests() 
 		{			
 			size_t size = 0;
 			_operation = &Operation_ReluctorGM24x::Instance;
 
-			_record = new Record();
+			_record = new Record<bool>();
 			_record->TicksPerSecond = 5000;
 			_record->Initialize(200);
 			_record->Frames[0].State = false;

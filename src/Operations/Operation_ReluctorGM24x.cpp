@@ -7,7 +7,7 @@ using namespace EmbeddedIOOperations;
 #ifdef OPERATION_RELUCTORGM24X_H
 namespace ReluctorOperations
 {
-	ReluctorResult Operation_ReluctorGM24x::Execute(Record *record, tick_t tick)
+	ReluctorResult Operation_ReluctorGM24x::Execute(Record<bool> *record, tick_t tick)
 	{
 		ReluctorResult ret;
 		ret.CalculatedTick = tick;
@@ -20,7 +20,7 @@ namespace ReluctorOperations
 		const frameindex_t startingLast = last;
 		while(ITimerService::TickLessThanTick(ret.CalculatedTick, record->Frames[last].Tick))
 		{
-			last = Record::Subtract(last, 1, record->Length);
+			last = Record<bool>::Subtract(last, 1, record->Length);
 			if(!record->Frames[last].Valid)
 			{
 				return ret;
@@ -31,22 +31,22 @@ namespace ReluctorOperations
 			}
 		}
 
-		const frameindex_t lastMinus8 =  Record::Subtract(last, 8, record->Length);
+		const frameindex_t lastMinus8 =  Record<bool>::Subtract(last, 8, record->Length);
 		if(!record->Frames[lastMinus8].Valid)
 		{
 			return ret;
 		}
 
-		const frameindex_t lastMinus1 =  Record::Subtract(last, 1, record->Length);
-		const frameindex_t lastMinus2 =  Record::Subtract(last, 2, record->Length);
-		const frameindex_t lastMinus4 =  Record::Subtract(last, 4, record->Length);
-		const frameindex_t lastMinus6 =  Record::Subtract(last, 6, record->Length);
+		const frameindex_t lastMinus1 =  Record<bool>::Subtract(last, 1, record->Length);
+		const frameindex_t lastMinus2 =  Record<bool>::Subtract(last, 2, record->Length);
+		const frameindex_t lastMinus4 =  Record<bool>::Subtract(last, 4, record->Length);
+		const frameindex_t lastMinus6 =  Record<bool>::Subtract(last, 6, record->Length);
 		
 		frameindex_t lastDown = last;
 		if(record->Frames[last].State)
 			lastDown = lastMinus1;
-		const frameindex_t lastDownMinus2 =  Record::Subtract(lastDown, 2, record->Length);
-		const frameindex_t lastDownMinus4 =  Record::Subtract(lastDown, 4, record->Length);
+		const frameindex_t lastDownMinus2 =  Record<bool>::Subtract(lastDown, 2, record->Length);
+		const frameindex_t lastDownMinus4 =  Record<bool>::Subtract(lastDown, 4, record->Length);
 		const tick_t delta1 = tick - record->Frames[lastDown].Tick;
 		const tick_t delta2 = record->Frames[lastDown].Tick - record->Frames[lastDownMinus2].Tick;
 		if(delta1 > (delta2 * 2))
@@ -452,7 +452,7 @@ namespace ReluctorOperations
 			lastFrame = 4;
 		for(lastFrame = lastFrame - lastFrame % 2; lastFrame > 2; lastFrame -= 2)
 		{
-			const frameindex_t lastDownMinus =  Record::Subtract(lastDown, lastFrame, record->Length);
+			const frameindex_t lastDownMinus =  Record<bool>::Subtract(lastDown, lastFrame, record->Length);
 			if(record->Frames[lastDownMinus].Valid)
 			{
 				delta = record->Frames[lastDown].Tick - record->Frames[lastDownMinus].Tick;
@@ -470,13 +470,13 @@ namespace ReluctorOperations
 		return ret;
 	}
 
-	bool Operation_ReluctorGM24x::IsLongPulse(Record *record, frameindex_t frame)
+	bool Operation_ReluctorGM24x::IsLongPulse(Record<bool> *record, frameindex_t frame)
 	{
 		if(record->Frames[frame].State)
-			frame = Record::Subtract(frame, 1, record->Length);
+			frame = Record<bool>::Subtract(frame, 1, record->Length);
 
-		const frameindex_t frameMinus1 = Record::Subtract(frame, 1, record->Length);
-		const frameindex_t frameMinus2 = Record::Subtract(frame, 2, record->Length);
+		const frameindex_t frameMinus1 = Record<bool>::Subtract(frame, 1, record->Length);
+		const frameindex_t frameMinus2 = Record<bool>::Subtract(frame, 2, record->Length);
 
 		const tick_t deltaPulse = record->Frames[frame].Tick - record->Frames[frameMinus1].Tick;
 		const tick_t delta15degrees = record->Frames[frame].Tick - record->Frames[frameMinus2].Tick;

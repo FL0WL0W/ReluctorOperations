@@ -1,5 +1,5 @@
 #include "Operations/IOperation.h"
-#include "Operations/Operation_DigitalPinRecord.h"
+#include "Record.h"
 #include "ReluctorResult.h"
 #include "Interpolation.h"
 #include "Config.h"
@@ -25,14 +25,14 @@ namespace ReluctorOperations
 		const uint8_t NumberOfTeethMissing;
 	};
 
-	class Operation_ReluctorUniversalMissingTeeth : public OperationArchitecture::IOperation<ReluctorResult, EmbeddedIOOperations::Record*, EmbeddedIOServices::tick_t>
+	class Operation_ReluctorUniversalMissingTeeth : public OperationArchitecture::IOperation<ReluctorResult, EmbeddedIOOperations::Record<bool>*, EmbeddedIOServices::tick_t>
 	{
 	protected:
 		const Operation_ReluctorUniversalMissingTeethConfig * const _config;
 	public:		
         Operation_ReluctorUniversalMissingTeeth(const Operation_ReluctorUniversalMissingTeethConfig * const config);
 
-		ReluctorResult Execute(EmbeddedIOOperations::Record *, EmbeddedIOServices::tick_t) override;
+		ReluctorResult Execute(EmbeddedIOOperations::Record<bool> *, EmbeddedIOServices::tick_t) override;
 
 		static OperationArchitecture::IOperationBase *Create(const void *config, size_t &sizeOut);
 	};
