@@ -483,7 +483,5 @@ namespace ReluctorOperations
 
 		return deltaPulse > (delta15degrees / 2);
 	}
-
-	Operation_ReluctorGM24x Operation_ReluctorGM24x::Instance;
 }
 #endif

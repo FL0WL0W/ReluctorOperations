@@ -12,8 +12,6 @@ namespace ReluctorOperations
 	public:
 		ReluctorResult Execute(EmbeddedIOOperations::Record<bool> *, EmbeddedIOServices::tick_t) override;
 		bool IsLongPulse(EmbeddedIOOperations::Record<bool> *, uint16_t frame);
-
-		static Operation_ReluctorGM24x Instance;
 	};
 }
 #endif

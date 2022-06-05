@@ -8,9 +8,12 @@ using namespace OperationArchitecture;
 #ifdef RELUCTOROPERATIONFACTORYREGISTER_H
 namespace ReluctorOperations
 {
+    Operation_ReluctorGM24x *Operation_ReluctorGM24xInstance;
     void ReluctorOperationFactoryRegister::Register(uint32_t idOffset, OperationFactory *factory)
     {
-        factory->Register(idOffset + 1, &Operation_ReluctorGM24x::Instance);
+        if(Operation_ReluctorGM24xInstance == 0)
+            Operation_ReluctorGM24xInstance = new Operation_ReluctorGM24x();
+        factory->Register(idOffset + 1, Operation_ReluctorGM24xInstance);
         factory->Register(idOffset + 2, Operation_ReluctorUniversal1x::Create);
         factory->Register(idOffset + 3, Operation_ReluctorUniversalMissingTeeth::Create);
     }
