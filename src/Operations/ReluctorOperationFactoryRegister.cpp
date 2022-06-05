@@ -8,7 +8,7 @@ using namespace OperationArchitecture;
 #ifdef RELUCTOROPERATIONFACTORYREGISTER_H
 namespace ReluctorOperations
 {
-    Operation_ReluctorGM24x *Operation_ReluctorGM24xInstance;
+    Operation_ReluctorGM24x *Operation_ReluctorGM24xInstance = 0;
     void ReluctorOperationFactoryRegister::Register(uint32_t idOffset, OperationFactory *factory)
     {
         if(Operation_ReluctorGM24xInstance == 0)
