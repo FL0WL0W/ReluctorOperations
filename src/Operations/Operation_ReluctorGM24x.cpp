@@ -440,16 +440,20 @@ namespace ReluctorOperations
 			}
 		}
 
-		//average position dot over the last 5ms
 		tick_t delta = record->Frames[lastDown].Tick - record->Frames[lastDownMinus4].Tick;
 		uint16_t deltaDegrees = 30;
-		frameindex_t lastFrame = record->TicksPerSecond / (50 * delta);
-		//limit to 1 resolution
-		if(lastFrame > 48)
-			lastFrame = 48;
-		//limit to 2 pulses (30 degrees)
-		if(lastFrame < 4)
-			lastFrame = 4;
+
+		// //average position dot over the last 5ms
+		// frameindex_t lastFrame = record->TicksPerSecond / (50 * delta);
+		// //limit to 1 resolution
+		// if(lastFrame > 48)
+		// 	lastFrame = 48;
+		// //limit to 2 pulses (30 degrees)
+		// if(lastFrame < 4)
+		// 	lastFrame = 4;
+
+		//average position dot over the last reolution
+		frameindex_t lastFrame = 48;
 		for(lastFrame = lastFrame - lastFrame % 2; lastFrame > 2; lastFrame -= 2)
 		{
 			const frameindex_t lastDownMinus =  Record<bool>::Subtract(lastDown, lastFrame, record->Length);
