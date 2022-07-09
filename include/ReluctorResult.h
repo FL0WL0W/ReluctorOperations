@@ -15,6 +15,8 @@ namespace ReluctorOperations
         positiondot_t PositionDot;
 		EmbeddedIOServices::tick_t CalculatedTick;
         bool Synced : 1;
+
+        ReluctorResult() : Synced(false) {}
         
 		constexpr rpm_t GetRPM()
 		{
