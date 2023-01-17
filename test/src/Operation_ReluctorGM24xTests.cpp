@@ -12,7 +12,7 @@ namespace UnitTests
 	class Operation_ReluctorGM24xTests : public Test
 	{
 		protected:
-		IOperationBase *_operation;
+		AbstractOperation *_operation;
 		Record<bool> *_record;
 
 		Operation_ReluctorGM24xTests() 

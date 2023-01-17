@@ -104,7 +104,7 @@ namespace ReluctorOperations
 		return ret;
 	}
 
-	IOperationBase *Operation_ReluctorUniversal1x::Create(const void *config, size_t &sizeOut)
+	AbstractOperation *Operation_ReluctorUniversal1x::Create(const void *config, size_t &sizeOut)
 	{
 		const Operation_ReluctorUniversal1xMode mode = Config::CastAndOffset<Operation_ReluctorUniversal1xMode>(config, sizeOut);
 		

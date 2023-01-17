@@ -122,7 +122,7 @@ namespace ReluctorOperations
 		return ret;
 	}
 
-	IOperationBase *Operation_ReluctorUniversalMissingTeeth::Create(const void *config, size_t &sizeOut)
+	AbstractOperation *Operation_ReluctorUniversalMissingTeeth::Create(const void *config, size_t &sizeOut)
 	{
 		return new Operation_ReluctorUniversalMissingTeeth(Config::CastConfigAndOffset<Operation_ReluctorUniversalMissingTeethConfig>(config, sizeOut));
 	}

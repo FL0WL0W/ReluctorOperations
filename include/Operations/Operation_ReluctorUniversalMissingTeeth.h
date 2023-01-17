@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Record.h"
 #include "ReluctorResult.h"
 #include "Interpolation.h"
@@ -25,7 +25,7 @@ namespace ReluctorOperations
 		const uint8_t NumberOfTeethMissing;
 	};
 
-	class Operation_ReluctorUniversalMissingTeeth : public OperationArchitecture::IOperation<ReluctorResult, EmbeddedIOOperations::Record<bool>*, EmbeddedIOServices::tick_t>
+	class Operation_ReluctorUniversalMissingTeeth : public OperationArchitecture::Operation<ReluctorResult, EmbeddedIOOperations::Record<bool>*, EmbeddedIOServices::tick_t>
 	{
 	protected:
 		const Operation_ReluctorUniversalMissingTeethConfig * const _config;
@@ -34,7 +34,7 @@ namespace ReluctorOperations
 
 		ReluctorResult Execute(EmbeddedIOOperations::Record<bool> *, EmbeddedIOServices::tick_t) override;
 
-		static OperationArchitecture::IOperationBase *Create(const void *config, size_t &sizeOut);
+		static OperationArchitecture::AbstractOperation *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif
