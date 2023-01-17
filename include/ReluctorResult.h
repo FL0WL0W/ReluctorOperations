@@ -18,7 +18,7 @@ namespace ReluctorOperations
 
         ReluctorResult() : Synced(false) {}
         
-		constexpr rpm_t GetRPM()
+		rpm_t GetRPM()
 		{
 			return PositionDot / 6;
 		}
