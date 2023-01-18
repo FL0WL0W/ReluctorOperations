@@ -32,7 +32,6 @@ namespace ReluctorOperations
 				return ret;
 		}
 
-		frameindex_t lastMinus1 =  Record<bool>::Subtract(last, 1, record->Length);
 		frameindex_t lastMinus2 =  Record<bool>::Subtract(last, 2, record->Length);
 		frameindex_t lastMinus4 =  Record<bool>::Subtract(last, 4, record->Length);
 

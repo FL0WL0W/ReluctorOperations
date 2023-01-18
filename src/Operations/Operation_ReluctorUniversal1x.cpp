@@ -74,7 +74,6 @@ namespace ReluctorOperations
 		}
 		else
 		{
-			tick_t lastTick = record->Frames[last].Tick;
 			if(_mode == RisingEdge)
 			{
 				if(!record->Frames[last].State)

@@ -16,9 +16,9 @@ namespace ReluctorOperations
 	class Operation_ReluctorUniversal1x : public OperationArchitecture::Operation<ReluctorResult, EmbeddedIOOperations::Record<bool>*, EmbeddedIOServices::tick_t>
 	{
 	protected:
+		const Operation_ReluctorUniversal1xMode _mode;
 		const position_t _risingPosition;
 		const position_t _fallingPosition;
-		const Operation_ReluctorUniversal1xMode _mode;
 	public:		
         Operation_ReluctorUniversal1x(const Operation_ReluctorUniversal1xMode mode, const position_t risingPosition, const position_t fallingPosition);
 
