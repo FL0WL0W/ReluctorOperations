@@ -29,7 +29,7 @@ namespace ReluctorOperations
 	{
 	protected:
 		const Operation_ReluctorUniversalMissingTeethConfig * const _config;
-		frameindex_t _lastFirstTooth = 0;
+		EmbeddedIOOperations::frameindex_t _lastFirstTooth = 0;
 	public:		
         Operation_ReluctorUniversalMissingTeeth(const Operation_ReluctorUniversalMissingTeethConfig * const config);
 
