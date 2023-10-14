@@ -19,10 +19,10 @@ namespace ReluctorOperations
 			return s;
 		}
 
-		const position_t FirstToothPosition;
-		const position_t ToothWidth;
-		const uint8_t NumberOfTeeth;
-		const uint8_t NumberOfTeethMissing;
+		position_t FirstToothPosition;
+		position_t ToothWidth;
+		uint8_t NumberOfTeeth;
+		uint8_t NumberOfTeethMissing;
 	};
 
 	class Operation_ReluctorUniversalMissingTeeth : public OperationArchitecture::Operation<ReluctorResult, EmbeddedIOOperations::Record<bool>*, EmbeddedIOServices::tick_t>
