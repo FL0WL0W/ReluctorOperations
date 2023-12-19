@@ -7,7 +7,7 @@
 #define OPERATION_RELUCTORUNIVERSAL1X_H
 namespace ReluctorOperations
 {
-	enum Operation_ReluctorUniversal1xMode {
+	enum Operation_ReluctorUniversal1xMode : uint8_t {
 		BothEdges = 0,
 		RisingEdge = 1,
 		FallingEdge = 2
