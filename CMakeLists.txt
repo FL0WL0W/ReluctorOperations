@@ -49,9 +49,11 @@ target_link_libraries(${TARGET} OperationArchitecture)
 target_link_libraries(${TARGET} EmbeddedIOServices)
 target_link_libraries(${TARGET} EmbeddedIOOperations)
 
-
-
 if(ReluctorOperations_build_tests)
     #include test
     add_subdirectory(test)
 endif()
+
+# install library
+install(TARGETS ${TARGET} LIBRARY DESTINATION lib)
+install(DIRECTORY "${HDR_DIR}/" DESTINATION include)
