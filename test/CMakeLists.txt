@@ -1,7 +1,7 @@
 ﻿# CMakeList.txt : CMake project for EmbeddedIOServicesUnitTests, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.30[3.30])
 
 set(TARGET		ReluctorOperationsUnitTests)
 
@@ -31,6 +31,7 @@ FetchContent_Declare(
     GIT_REPOSITORY    https://github.com/google/googletest
     GIT_TAG           main
     GIT_PROGRESS TRUE
+    GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(gtest)
 target_link_libraries(${TARGET} gtest gtest_main gmock)

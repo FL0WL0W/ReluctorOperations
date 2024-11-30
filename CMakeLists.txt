@@ -1,13 +1,13 @@
 ﻿# CMakeList.txt : CMake project for Reluctor, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.30[3.30])
 option(ReluctorOperations_build_tests "Build all of ReluctorOperations tests" OFF)
 
-set(TARGET		ReluctorOperations)
-set(HDR_DIR		include)
-set(SRCS_DIR	src)
-set(LIBRARIES	libs)
+set(TARGET		        ReluctorOperations)
+set(HDR_DIR		        include)
+set(SRCS_DIR	        src)
+set(LIBRARIES_DIR	    ${CMAKE_SOURCE_DIR}/libs)
 
 project(${TARGET} CXX)
 
@@ -19,22 +19,31 @@ FetchContent_Declare(
     GIT_REPOSITORY    https://github.com/FL0WL0W/OperationArchitecture
     GIT_TAG           main
     GIT_PROGRESS TRUE
+    GIT_SHALLOW TRUE
+    SOURCE_DIR  ${LIBRARIES_DIR}/OperationArchitecture
 )
 FetchContent_MakeAvailable(OperationArchitecture)
+execute_process(COMMAND git pull WORKING_DIRECTORY ${LIBRARIES_DIR}/OperationArchitecture)
 FetchContent_Declare(
     EmbeddedIOServices
     GIT_REPOSITORY    https://github.com/FL0WL0W/EmbeddedIOServices
     GIT_TAG           main
     GIT_PROGRESS TRUE
+    GIT_SHALLOW TRUE
+    SOURCE_DIR  ${LIBRARIES_DIR}/EmbeddedIOServices
 )
 FetchContent_MakeAvailable(EmbeddedIOServices)
+execute_process(COMMAND git pull WORKING_DIRECTORY ${LIBRARIES_DIR}/EmbeddedIOServices)
 FetchContent_Declare(
     EmbeddedIOOperations
     GIT_REPOSITORY    https://github.com/FL0WL0W/EmbeddedIOOperations
     GIT_TAG           main
     GIT_PROGRESS TRUE
+    GIT_SHALLOW TRUE
+    SOURCE_DIR  ${LIBRARIES_DIR}/EmbeddedIOOperations
 )
 FetchContent_MakeAvailable(EmbeddedIOOperations)
+execute_process(COMMAND git pull WORKING_DIRECTORY ${LIBRARIES_DIR}/EmbeddedIOOperations)
 
 # headers are always in include/
 file(GLOB_RECURSE HDRS CONFIGURE_DEPENDS ${HDR_DIR}/*.h)
@@ -53,7 +62,3 @@ if(ReluctorOperations_build_tests)
     #include test
     add_subdirectory(test)
 endif()
-
-# install library
-install(TARGETS ${TARGET} LIBRARY DESTINATION lib)
-install(DIRECTORY "${HDR_DIR}/" DESTINATION include)
