@@ -21,7 +21,7 @@ namespace ReluctorOperations
 		ret.Synced = false;
 		frameindex_t last = record->Last;
 		if(!record->Frames[last].Valid)
-			return ret;;
+			return ret;
 		const frameindex_t startingLast = last;
 		while(ITimerService::TickLessThanTick(ret.CalculatedTick, record->Frames[last].Tick))
 		{
@@ -79,7 +79,7 @@ namespace ReluctorOperations
 				if(!record->Frames[last].State)
 				{
 					last = lastMinus1;
-					lastMinus1 = Record<bool>::Subtract(last, 1, record->Length);
+					lastMinus2 = Record<bool>::Subtract(lastMinus2, 1, record->Length);
 				}
 				ret.Position = _risingPosition;
 			}
@@ -88,11 +88,11 @@ namespace ReluctorOperations
 				if(record->Frames[last].State)
 				{
 					last = lastMinus1;
-					lastMinus1 = Record<bool>::Subtract(last, 1, record->Length);
+					lastMinus2 = Record<bool>::Subtract(lastMinus2, 1, record->Length);
 				}
 				ret.Position = _fallingPosition;
 			}
-			ret.PositionDot = 360 / (record->Frames[last].Tick - record->Frames[lastMinus1].Tick);
+			ret.PositionDot = 360.0f / (record->Frames[last].Tick - record->Frames[lastMinus2].Tick);
 			ret.Position += (ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot;
 		}
 
