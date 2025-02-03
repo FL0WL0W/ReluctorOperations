@@ -11,9 +11,9 @@ namespace ReluctorOperations
 
     struct ReluctorResult
     {
-        position_t Position;
-        positiondot_t PositionDot;
-		EmbeddedIOServices::tick_t CalculatedTick;
+        position_t Position = 0;
+        positiondot_t PositionDot = 0;
+		EmbeddedIOServices::tick_t CalculatedTick = 0;
         bool Synced : 1;
 
         ReluctorResult() : Synced(false) {}
