@@ -3,10 +3,6 @@
     "ms-vscode.cpptools",
     "twxs.cmake",
     "ms-vscode.cmake-tools",
-<<<<<<< HEAD
-    "matepek.vscode-catch2-test-adapter"
-=======
     "FL0WL0W.gtest-adapter-new"
->>>>>>> 8b3be47 (update to use Unix Makefiles)
   ]
 }

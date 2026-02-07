@@ -5,5 +5,9 @@
         "${command:cmake.buildDirectory}/_deps/embeddedioservices-build/test/EmbeddedIOServicesUnitTests",
         "${command:cmake.buildDirectory}/_deps/operationarchitecture-build/test/OperationArchitectureUnitTests"
     ],
-    "cmake.ctest.testExplorerIntegrationEnabled": false
+    "cmake.ctest.testExplorerIntegrationEnabled": false,
+    "gtest-adapter-new.debugConfig": [
+        "ReluctorOperations Tests"
+    ],
+    "gtest-adapter-new.supportLocation": true
 }
