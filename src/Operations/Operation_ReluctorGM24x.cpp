@@ -59,385 +59,70 @@ namespace ReluctorOperations
 			return ret;
 		}
 
-		uint16_t baseDegree = 0;
+		const bool risingEdge = record->Frames[last].State;
+		uint8_t pulseSignature = risingEdge ? 0x01U : 0U;
+		pulseSignature |= IsLongPulse(record, last)       ? 0x02U : 0U;
+		pulseSignature |= IsLongPulse(record, lastMinus2) ? 0x04U : 0U;
+		pulseSignature |= IsLongPulse(record, lastMinus4) ? 0x08U : 0U;
+		pulseSignature |= IsLongPulse(record, lastMinus6) ? 0x10U : 0U;
+		pulseSignature |= IsLongPulse(record, lastMinus8) ? 0x20U : 0U;
 
-		if(IsLongPulse(record, last))
+		// Bit 0 is the current edge state (1 = rising, 0 = falling).
+		// Bits 1 through 5 contain the five pulse lengths, ordered from
+		// newest to oldest. Each valid signature maps directly to an angle.
+		uint16_t baseDegree;
+		switch(pulseSignature)
 		{
-			if(IsLongPulse(record, lastMinus2))
-			{
-				if(IsLongPulse(record, lastMinus4))
-				{
-					if(IsLongPulse(record, lastMinus6))
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//long-long-long-long-long
-							if(record->Frames[last].State)
-								//102
-								baseDegree = 102;
-							else
-								//90
-								baseDegree = 90;
-						}
-						else
-						{
-							//long-long-long-long-short
-							if(record->Frames[last].State)
-								//78
-								baseDegree = 78;
-							else
-								//75
-								baseDegree = 75;
-						}
-					}
-					else
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//long-long-long-short-long
-							if(record->Frames[last].State)
-								//162
-								baseDegree = 162;
-							else
-								//150
-								baseDegree = 150;
-						}
-						else
-						{
-							//long-long-long-short-short
-							if(record->Frames[last].State)
-								//63
-								baseDegree = 63;
-							else
-								//60
-								baseDegree = 60;
-						}
-					}
-				}
-				else
-				{
-					if(IsLongPulse(record, lastMinus6))
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//long-long-short-long-long
-							if(record->Frames[last].State)
-								//138
-								baseDegree = 138;
-							else
-								//135
-								baseDegree = 135;
-						}
-						else
-						{
-							//long-long-short-long-short
-							//wtf?
-							return ret;
-						}
-					}
-					else
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//long-long-short-short-long
-							if(record->Frames[last].State)
-								//222
-								baseDegree = 222;
-							else
-								//210
-								baseDegree = 210;
-						}
-						else
-						{
-							//long-long-short-short-short
-							if(record->Frames[last].State)
-								//48
-								baseDegree = 48;
-							else
-								//45
-								baseDegree = 45;
-						}
-					}
-				}
-			}
-			else
-			{
-				if(IsLongPulse(record, lastMinus4))
-				{
-					if(IsLongPulse(record, lastMinus6))
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//long-short-long-long-long
-							if(record->Frames[last].State)
-								//123
-								baseDegree = 123;
-							else
-								//120
-								baseDegree = 120;
-						}
-						else
-						{
-							//long-short-long-long-short
-							//wtf?
-							return ret;
-						}
-					}
-					else
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//long-short-long-short-long
-							//wtf?
-							return ret;
-						}
-						else
-						{
-							//long-short-long-short-short
-							if(record->Frames[last].State)
-								//312
-								baseDegree = 312;
-							else
-								//300
-								baseDegree = 300;
-						}
-					}
-				}
-				else
-				{
-					if(IsLongPulse(record, lastMinus6))
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//long-short-short-long-long
-							if(record->Frames[last].State)
-								//198
-								baseDegree = 198;
-							else
-								//195
-								baseDegree = 195;
-						}
-						else
-						{
-							//long-short-short-long-short
-							//wtf?
-							return ret;
-						}
-					}
-					else
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//long-short-short-short-long
-							if(record->Frames[last].State)
-								//282
-								baseDegree = 282;
-							else
-								//270
-								baseDegree = 270;
-						}
-						else
-						{
-							//long-short-short-short-short
-							if(record->Frames[last].State)
-								//33
-								baseDegree = 33;
-							else
-								//30
-								baseDegree = 30;
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			if(IsLongPulse(record, lastMinus2))
-			{
-				if(IsLongPulse(record, lastMinus4))
-				{
-					if(IsLongPulse(record, lastMinus6))
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//short-long-long-long-long
-							if(record->Frames[last].State)
-								//108
-								baseDegree = 108;
-							else
-								//105
-								baseDegree = 105;
-						}
-						else
-						{
-							//short-long-long-long-short
-							if(record->Frames[last].State)
-								//177
-								baseDegree = 177;
-							else
-								//165
-								baseDegree = 165;
-						}
-					}
-					else
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//short-long-long-short-long
-							//wtf?
-							return ret;
-						}
-						else
-						{
-							//short-long-long-short-short
-							if(record->Frames[last].State)
-								//237
-								baseDegree = 237;
-							else
-								//225
-								baseDegree = 225;
-						}
-					}
-				}
-				else
-				{
-					if(IsLongPulse(record, lastMinus6))
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//short-long-short-long-long
-							//wtf?
-							return ret;
-						}
-						else
-						{
-							//short-long-short-long-short
-							if(record->Frames[last].State)
-								//327
-								baseDegree = 327;
-							else
-								//315
-								baseDegree = 315;
-						}
-					}
-					else
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//short-long-short-short-long
-							//wtf?
-							return ret;
-						}
-						else
-						{
-							//short-long-short-short-short
-							if(record->Frames[last].State)
-								//288
-								baseDegree = 288;
-							else
-								//285
-								baseDegree = 285;
-						}
-					}
-				}
-			}
-			else
-			{
-				if(IsLongPulse(record, lastMinus4))
-				{
-					if(IsLongPulse(record, lastMinus6))
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//short-short-long-long-long
-							if(record->Frames[last].State)
-								//183
-								baseDegree = 183;
-							else
-								//180
-								baseDegree = 180;
-						}
-						else
-						{
-							//short-short-long-long-short
-							if(record->Frames[last].State)
-								//252
-								baseDegree = 252;
-							else
-								//240
-								baseDegree = 240;
-						}
-					}
-					else
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//short-short-long-short-long
-							if(record->Frames[last].State)
-								//342
-								baseDegree = 342;
-							else
-								//330
-								baseDegree = 330;
-						}
-						else
-						{
-							//short-short-long-short-short
-							//wtf?
-							return ret;
-						}
-					}
-				}
-				else
-				{
-					if(IsLongPulse(record, lastMinus6))
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//short-short-short-long-long
-							if(record->Frames[last].State)
-								//258
-								baseDegree = 258;
-							else
-								//255
-								baseDegree = 255;
-						}
-						else
-						{
-							//short-short-short-long-short
-							if(record->Frames[last].State)
-								//357
-								baseDegree = 357;
-							else
-								//345
-								baseDegree = 345;
-						}
-					}
-					else
-					{
-						if(IsLongPulse(record, lastMinus8))
-						{
-							//short-short-short-short-long
-							if(record->Frames[last].State)
-								//12
-								baseDegree = 12;
-							else
-								//0
-								baseDegree = 0;
-						}
-						else
-						{
-							//short-short-short-short-short
-							if(record->Frames[last].State)
-								//18
-								baseDegree = 18;
-							else
-								//15
-								baseDegree = 15;
-						}
-					}
-				}
-			}
+			case 0b100000U: baseDegree =   0U; break; // LSSSS, falling
+			case 0b100001U: baseDegree =  12U; break; // LSSSS, rising
+			case 0b000000U: baseDegree =  15U; break; // SSSSS, falling
+			case 0b000001U: baseDegree =  18U; break; // SSSSS, rising
+			case 0b000010U: baseDegree =  30U; break; // SSSSL, falling
+			case 0b000011U: baseDegree =  33U; break; // SSSSL, rising
+			case 0b000110U: baseDegree =  45U; break; // SSSLL, falling
+			case 0b000111U: baseDegree =  48U; break; // SSSLL, rising
+			case 0b001110U: baseDegree =  60U; break; // SSLLL, falling
+			case 0b001111U: baseDegree =  63U; break; // SSLLL, rising
+			case 0b011110U: baseDegree =  75U; break; // SLLLL, falling
+			case 0b011111U: baseDegree =  78U; break; // SLLLL, rising
+			case 0b111110U: baseDegree =  90U; break; // LLLLL, falling
+			case 0b111111U: baseDegree = 102U; break; // LLLLL, rising
+			case 0b111100U: baseDegree = 105U; break; // LLLLS, falling
+			case 0b111101U: baseDegree = 108U; break; // LLLLS, rising
+			case 0b111010U: baseDegree = 120U; break; // LLLSL, falling
+			case 0b111011U: baseDegree = 123U; break; // LLLSL, rising
+			case 0b110110U: baseDegree = 135U; break; // LLSLL, falling
+			case 0b110111U: baseDegree = 138U; break; // LLSLL, rising
+			case 0b101110U: baseDegree = 150U; break; // LSLLL, falling
+			case 0b101111U: baseDegree = 162U; break; // LSLLL, rising
+			case 0b011100U: baseDegree = 165U; break; // SLLLS, falling
+			case 0b011101U: baseDegree = 177U; break; // SLLLS, rising
+			case 0b111000U: baseDegree = 180U; break; // LLLSS, falling
+			case 0b111001U: baseDegree = 183U; break; // LLLSS, rising
+			case 0b110010U: baseDegree = 195U; break; // LLSSL, falling
+			case 0b110011U: baseDegree = 198U; break; // LLSSL, rising
+			case 0b100110U: baseDegree = 210U; break; // LSSLL, falling
+			case 0b100111U: baseDegree = 222U; break; // LSSLL, rising
+			case 0b001100U: baseDegree = 225U; break; // SSLLS, falling
+			case 0b001101U: baseDegree = 237U; break; // SSLLS, rising
+			case 0b011000U: baseDegree = 240U; break; // SLLSS, falling
+			case 0b011001U: baseDegree = 252U; break; // SLLSS, rising
+			case 0b110000U: baseDegree = 255U; break; // LLSSS, falling
+			case 0b110001U: baseDegree = 258U; break; // LLSSS, rising
+			case 0b100010U: baseDegree = 270U; break; // LSSSL, falling
+			case 0b100011U: baseDegree = 282U; break; // LSSSL, rising
+			case 0b000100U: baseDegree = 285U; break; // SSSLS, falling
+			case 0b000101U: baseDegree = 288U; break; // SSSLS, rising
+			case 0b001010U: baseDegree = 300U; break; // SSLSL, falling
+			case 0b001011U: baseDegree = 312U; break; // SSLSL, rising
+			case 0b010100U: baseDegree = 315U; break; // SLSLS, falling
+			case 0b010101U: baseDegree = 327U; break; // SLSLS, rising
+			case 0b101000U: baseDegree = 330U; break; // LSLSS, falling
+			case 0b101001U: baseDegree = 342U; break; // LSLSS, rising
+			case 0b010000U: baseDegree = 345U; break; // SLSSS, falling
+			case 0b010001U: baseDegree = 357U; break; // SLSSS, rising
+			default:
+				return ret;
 		}
 
 		tick_t delta = record->Frames[lastDown].Tick - record->Frames[lastDownMinus4].Tick;
