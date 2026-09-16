@@ -212,14 +212,15 @@ namespace UnitTests
 		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 1000).Synced);
 		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 1000).Synced);
 		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 5900).Synced);
+		// Five complete pulses are required before synchronization.
+		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 6000).Synced);
+		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 6100).Synced);
+		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 6150).Synced);
+		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 6300).Synced);
+		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 6400).Synced);
+		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 7499).Synced);
 		//synced
-		ASSERT_EQ(true, _operation->Execute<ReluctorResult>(_record, 6000).Synced);
-		ASSERT_EQ(60, _operation->Execute<ReluctorResult>(_record, 6000).Position);
-		ASSERT_EQ(50, _operation->Execute<ReluctorResult>(_record, 6000).PositionDot);
-		ASSERT_EQ(61, _operation->Execute<ReluctorResult>(_record, 6100).Position);
-		ASSERT_EQ(61.5, _operation->Execute<ReluctorResult>(_record, 6150).Position);
-		ASSERT_EQ(63, _operation->Execute<ReluctorResult>(_record, 6300).Position);
-		ASSERT_EQ(64, _operation->Execute<ReluctorResult>(_record, 6400).Position);
+		ASSERT_EQ(true, _operation->Execute<ReluctorResult>(_record, 7500).Synced);
 		ASSERT_EQ(75, _operation->Execute<ReluctorResult>(_record, 7500).Position);
 		ASSERT_EQ(76, _operation->Execute<ReluctorResult>(_record, 7600).Position);
 		ASSERT_EQ(78, _operation->Execute<ReluctorResult>(_record, 7800).Position);
@@ -316,5 +317,31 @@ namespace UnitTests
 
 		//too much time without a pulse
 		ASSERT_EQ(false, _operation->Execute<ReluctorResult>(_record, 100000).Synced);
+	}
+
+	TEST_F(Operation_ReluctorGM24xTests, ShortGlitchIsRemovedWithoutChangingPosition)
+	{
+		// Insert a 20-tick noise pulse between the real edges at 6000 and
+		// 6300. The resulting history still contains five complete pulses.
+		_record->Frames[9].State = true;
+		_record->Frames[9].Valid = true;
+		_record->Frames[9].Tick = 6100;
+		_record->Frames[10].State = false;
+		_record->Frames[10].Valid = true;
+		_record->Frames[10].Tick = 6120;
+		_record->Frames[11].State = true;
+		_record->Frames[11].Valid = true;
+		_record->Frames[11].Tick = 6300;
+		_record->Frames[12].State = false;
+		_record->Frames[12].Valid = true;
+		_record->Frames[12].Tick = 7500;
+		_record->Last = 12;
+
+		const ReluctorResult result =
+			_operation->Execute<ReluctorResult>(_record, 7500);
+
+		ASSERT_TRUE(result.Synced);
+		ASSERT_FLOAT_EQ(75.0F, result.Position);
+		ASSERT_FLOAT_EQ(50.0F, result.PositionDot);
 	}
 }

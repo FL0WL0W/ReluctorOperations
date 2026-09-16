@@ -1,4 +1,6 @@
 #include "Operations/Operation_ReluctorGM24x.h"
+#include <algorithm>
+#include <vector>
 
 using namespace EmbeddedIOServices;
 using namespace OperationArchitecture;
@@ -12,165 +14,205 @@ namespace ReluctorOperations
 		ReluctorResult ret;
 		ret.CalculatedTick = tick;
 		ret.Synced = false;
-		frameindex_t last = record->Last;
-		if(!record->Frames[last].Valid)
+		frameindex_t lastMinus[48];
+		lastMinus[0] = record->Last;
+		if(!record->Frames[lastMinus[0]].Valid)
 		{
 			return ret;
 		}
-		const frameindex_t startingLast = last;
-		while(ITimerService::TickLessThanTick(ret.CalculatedTick, record->Frames[last].Tick))
+		const frameindex_t startingLast = lastMinus[0];
+		while(ITimerService::TickLessThanTick(ret.CalculatedTick, record->Frames[lastMinus[0]].Tick))
 		{
-			last = Record<bool>::Subtract(last, 1, record->Length);
-			if(!record->Frames[last].Valid)
+			lastMinus[0] = Record<bool>::Subtract(lastMinus[0], 1, record->Length);
+			if(!record->Frames[lastMinus[0]].Valid)
 			{
 				return ret;
 			}
-			if(startingLast == last)
+			if(startingLast == lastMinus[0])
 			{
 				return ret;
 			}
 		}
+		//always reference on falling edges
+		if(record->Frames[lastMinus[0]].State)
+		{
+			lastMinus[0] = Record<bool>::Subtract(lastMinus[0], 1, record->Length);
+		}
 
-		const frameindex_t lastMinus8 =  Record<bool>::Subtract(last, 8, record->Length);
-		if(!record->Frames[lastMinus8].Valid)
+		for(uint8_t i = 1; i < (sizeof(lastMinus) / sizeof(lastMinus[0])); i++)
+		{
+			lastMinus[i] = Record<bool>::Subtract(lastMinus[0], i, record->Length);
+		}
+		uint8_t validCount = 0;
+		for(validCount = 10; validCount < (sizeof(lastMinus) / sizeof(lastMinus[0])) && record->Frames[lastMinus[validCount]].Valid; validCount++) ;
+		if(validCount < 11)
 		{
 			return ret;
 		}
 
-		const frameindex_t lastMinus1 =  Record<bool>::Subtract(last, 1, record->Length);
-		const frameindex_t lastMinus2 =  Record<bool>::Subtract(last, 2, record->Length);
-		const frameindex_t lastMinus4 =  Record<bool>::Subtract(last, 4, record->Length);
-		const frameindex_t lastMinus6 =  Record<bool>::Subtract(last, 6, record->Length);
+		tick_t deltas[validCount];
+		for(uint8_t i = 0; i < validCount-1; i++)
+		{
+			deltas[i] = record->Frames[lastMinus[i]].Tick - record->Frames[lastMinus[i + 1]].Tick;
+		}
+
+		std::vector<tick_t> delta15s = std::vector<tick_t>(5);
+		for(uint8_t i = 0; i < 10; i+=2)
+		{
+			delta15s[i / 2] = deltas[i] + deltas[i + 1];
+		}
 		
-		frameindex_t lastDown = last;
-		if(record->Frames[last].State)
-			lastDown = lastMinus1;
-		const frameindex_t lastDownMinus2 =  Record<bool>::Subtract(lastDown, 2, record->Length);
-		const frameindex_t lastDownMinus4 =  Record<bool>::Subtract(lastDown, 4, record->Length);
-		const tick_t delta1 = tick - record->Frames[lastDown].Tick;
-		const tick_t delta2 = record->Frames[lastDown].Tick - record->Frames[lastDownMinus2].Tick;
-		if(delta1 > (delta2 * 2))
+		//median of last 5 delta15s.
+		std::nth_element(delta15s.begin(), delta15s.begin() + delta15s.size() / 2, delta15s.end());
+		const tick_t median15 = delta15s[delta15s.size() / 2];
+
+		// Consider synchronization lost after two expected 15-degree
+		// periods without reaching the most recent falling edge.
+		const tick_t ticksSinceLastFalling =
+			ret.CalculatedTick - record->Frames[lastMinus[0]].Tick;
+		if(ticksSinceLastFalling > (median15 * 2))
 		{
 			return ret;
 		}
-		const tick_t delta3 = record->Frames[lastDownMinus2].Tick - record->Frames[lastDownMinus4].Tick;
-		if((delta2 * 2) < delta3 || (delta3 * 2) < delta2)
+		
+		uint8_t median15Index = 0xFF;
+		for(uint8_t i = 0; i < 10; i+=2)
 		{
-			return ret;
-		}
-
-		const bool risingEdge = record->Frames[last].State;
-		uint8_t pulseSignature = risingEdge ? 0x01U : 0U;
-		pulseSignature |= IsLongPulse(record, last)       ? 0x02U : 0U;
-		pulseSignature |= IsLongPulse(record, lastMinus2) ? 0x04U : 0U;
-		pulseSignature |= IsLongPulse(record, lastMinus4) ? 0x08U : 0U;
-		pulseSignature |= IsLongPulse(record, lastMinus6) ? 0x10U : 0U;
-		pulseSignature |= IsLongPulse(record, lastMinus8) ? 0x20U : 0U;
-
-		// Bit 0 is the current edge state (1 = rising, 0 = falling).
-		// Bits 1 through 5 contain the five pulse lengths, ordered from
-		// newest to oldest. Each valid signature maps directly to an angle.
-		uint16_t baseDegree;
-		switch(pulseSignature)
-		{
-			case 0b100000U: baseDegree =   0U; break; // LSSSS, falling
-			case 0b100001U: baseDegree =  12U; break; // LSSSS, rising
-			case 0b000000U: baseDegree =  15U; break; // SSSSS, falling
-			case 0b000001U: baseDegree =  18U; break; // SSSSS, rising
-			case 0b000010U: baseDegree =  30U; break; // SSSSL, falling
-			case 0b000011U: baseDegree =  33U; break; // SSSSL, rising
-			case 0b000110U: baseDegree =  45U; break; // SSSLL, falling
-			case 0b000111U: baseDegree =  48U; break; // SSSLL, rising
-			case 0b001110U: baseDegree =  60U; break; // SSLLL, falling
-			case 0b001111U: baseDegree =  63U; break; // SSLLL, rising
-			case 0b011110U: baseDegree =  75U; break; // SLLLL, falling
-			case 0b011111U: baseDegree =  78U; break; // SLLLL, rising
-			case 0b111110U: baseDegree =  90U; break; // LLLLL, falling
-			case 0b111111U: baseDegree = 102U; break; // LLLLL, rising
-			case 0b111100U: baseDegree = 105U; break; // LLLLS, falling
-			case 0b111101U: baseDegree = 108U; break; // LLLLS, rising
-			case 0b111010U: baseDegree = 120U; break; // LLLSL, falling
-			case 0b111011U: baseDegree = 123U; break; // LLLSL, rising
-			case 0b110110U: baseDegree = 135U; break; // LLSLL, falling
-			case 0b110111U: baseDegree = 138U; break; // LLSLL, rising
-			case 0b101110U: baseDegree = 150U; break; // LSLLL, falling
-			case 0b101111U: baseDegree = 162U; break; // LSLLL, rising
-			case 0b011100U: baseDegree = 165U; break; // SLLLS, falling
-			case 0b011101U: baseDegree = 177U; break; // SLLLS, rising
-			case 0b111000U: baseDegree = 180U; break; // LLLSS, falling
-			case 0b111001U: baseDegree = 183U; break; // LLLSS, rising
-			case 0b110010U: baseDegree = 195U; break; // LLSSL, falling
-			case 0b110011U: baseDegree = 198U; break; // LLSSL, rising
-			case 0b100110U: baseDegree = 210U; break; // LSSLL, falling
-			case 0b100111U: baseDegree = 222U; break; // LSSLL, rising
-			case 0b001100U: baseDegree = 225U; break; // SSLLS, falling
-			case 0b001101U: baseDegree = 237U; break; // SSLLS, rising
-			case 0b011000U: baseDegree = 240U; break; // SLLSS, falling
-			case 0b011001U: baseDegree = 252U; break; // SLLSS, rising
-			case 0b110000U: baseDegree = 255U; break; // LLSSS, falling
-			case 0b110001U: baseDegree = 258U; break; // LLSSS, rising
-			case 0b100010U: baseDegree = 270U; break; // LSSSL, falling
-			case 0b100011U: baseDegree = 282U; break; // LSSSL, rising
-			case 0b000100U: baseDegree = 285U; break; // SSSLS, falling
-			case 0b000101U: baseDegree = 288U; break; // SSSLS, rising
-			case 0b001010U: baseDegree = 300U; break; // SSLSL, falling
-			case 0b001011U: baseDegree = 312U; break; // SSLSL, rising
-			case 0b010100U: baseDegree = 315U; break; // SLSLS, falling
-			case 0b010101U: baseDegree = 327U; break; // SLSLS, rising
-			case 0b101000U: baseDegree = 330U; break; // LSLSS, falling
-			case 0b101001U: baseDegree = 342U; break; // LSLSS, rising
-			case 0b010000U: baseDegree = 345U; break; // SLSSS, falling
-			case 0b010001U: baseDegree = 357U; break; // SLSSS, rising
-			default:
-				return ret;
-		}
-
-		tick_t delta = record->Frames[lastDown].Tick - record->Frames[lastDownMinus4].Tick;
-		uint16_t deltaDegrees = 30;
-
-		// //average position dot over the last 5ms
-		// frameindex_t lastFrame = record->TicksPerSecond / (50 * delta);
-		// //limit to 1 resolution
-		// if(lastFrame > 48)
-		// 	lastFrame = 48;
-		// //limit to 2 pulses (30 degrees)
-		// if(lastFrame < 4)
-		// 	lastFrame = 4;
-
-		//average position dot over the last reolution
-		frameindex_t lastFrame = 48;
-		for(lastFrame = lastFrame - lastFrame % 2; lastFrame > 2; lastFrame -= 2)
-		{
-			const frameindex_t lastDownMinus =  Record<bool>::Subtract(lastDown, lastFrame, record->Length);
-			if(record->Frames[lastDownMinus].Valid)
+			if(median15 == deltas[i] + deltas[i + 1])
 			{
-				delta = record->Frames[lastDown].Tick - record->Frames[lastDownMinus].Tick;
-				deltaDegrees = (lastFrame / 2) * 15;
+				median15Index = i;
 				break;
 			}
 		}
 
+		if(median15Index == 0xFF)
+		{
+			return ret;
+		}
+
+		//validate pulses forward in time from median
+		for(int8_t i = median15Index - 2; i >= 0; i-=2)
+		{
+			if(deltas[i] + deltas[i+1] > (median15 * 3) / 2)
+			{
+				return ret; // long pulse means timeout, so we don't have a valid sync
+			}
+			if(deltas[i] < median15 / 10 || deltas[i + 1] < median15 / 10)
+			{
+				//add the period to the previous delta
+				if(i > 0)
+				{
+					deltas[i - 1] += deltas[i] + deltas[i + 1];
+				}
+				//remove these transitions
+				validCount -= 2;
+				for(uint8_t j = i; j < validCount; j++)
+				{
+					lastMinus[j] = lastMinus[j + 2];
+					deltas[j] = deltas[j + 2];
+				}
+				median15Index -= 2;
+			}
+		}
+
+		//validate pulses backward in time from median
+		for(uint8_t i = median15Index + 2; i < validCount - 1;)
+		{
+			if(deltas[i] + deltas[i+1] > (median15 * 3) / 2)
+			{
+				// The long interval is not trustworthy, but the frames newer
+				// than it are still contiguous.
+				validCount = i;
+				if(validCount < 11)
+				{
+					return ret;
+				}
+				break;
+			}
+			if(deltas[i] < median15 / 10 || deltas[i + 1] < median15 / 10)
+			{
+				//add the period to the next delta
+				if(i + 2 < validCount - 1)
+				{
+					deltas[i] += deltas[i + 1] + deltas[i + 2];
+				}
+				//remove these transitions
+				validCount -= 2;
+				for(uint8_t j = i+1; j < validCount; j++)
+				{
+					lastMinus[j] = lastMinus[j + 2];
+					deltas[j] = deltas[j + 2];
+				}
+			}
+			else
+			{
+				i += 2;
+			}
+		}
+
+		delta15s = std::vector<tick_t>((validCount - 1) / 2);
+		for(uint8_t i = 0; i < validCount-2; i+=2)
+		{
+			delta15s[i / 2] = deltas[i] + deltas[i + 1];
+		}
+
+		uint8_t pulseSignature = 0;
+		for(uint8_t i = 0; i < 10; i+=2)
+		{
+			if(deltas[i] > (median15 * 9) / 15)
+				pulseSignature |= 0x1 << (i / 2);
+			else if(deltas[i] > (median15 * 6) / 15)
+				return ret;
+		}
+
+		// Bits 0 through 4 contain the five pulse lengths, ordered from
+		// newest to oldest. Each valid signature maps directly to an angle.
+		uint16_t baseDegree;
+		switch(pulseSignature & 0b111111U)
+		{
+			case 0b10000U: baseDegree =   0U; break; // LSSSS
+			case 0b00000U: baseDegree =  15U; break; // SSSSS
+			case 0b00001U: baseDegree =  30U; break; // SSSSL
+			case 0b00011U: baseDegree =  45U; break; // SSSLL
+			case 0b00111U: baseDegree =  60U; break; // SSLLL
+			case 0b01111U: baseDegree =  75U; break; // SLLLL
+			case 0b11111U: baseDegree =  90U; break; // LLLLL
+			case 0b11110U: baseDegree = 105U; break; // LLLLS
+			case 0b11101U: baseDegree = 120U; break; // LLLSL
+			case 0b11011U: baseDegree = 135U; break; // LLSLL
+			case 0b10111U: baseDegree = 150U; break; // LSLLL
+			case 0b01110U: baseDegree = 165U; break; // SLLLS
+			case 0b11100U: baseDegree = 180U; break; // LLLSS
+			case 0b11001U: baseDegree = 195U; break; // LLSSL
+			case 0b10011U: baseDegree = 210U; break; // LSSLL
+			case 0b00110U: baseDegree = 225U; break; // SSLLS
+			case 0b01100U: baseDegree = 240U; break; // SLLSS
+			case 0b11000U: baseDegree = 255U; break; // LLSSS
+			case 0b10001U: baseDegree = 270U; break; // LSSSL
+			case 0b00010U: baseDegree = 285U; break; // SSSLS
+			case 0b00101U: baseDegree = 300U; break; // SSLSL
+			case 0b01010U: baseDegree = 315U; break; // SLSLS
+			case 0b10100U: baseDegree = 330U; break; // LSLSS
+			case 0b01000U: baseDegree = 345U; break; // SLSSS
+			default:
+				return ret;
+		}
+
+		tick_t delta = 0;
+		uint16_t deltaDegrees = 0;
+		for(std::vector<tick_t>::iterator it = delta15s.begin(); it != delta15s.end(); ++it)
+		{
+			delta += *it;
+			deltaDegrees += 15;
+		}
+
 		ret.PositionDot = static_cast<float>(deltaDegrees) / delta;
-		ret.Position = baseDegree + ((ret.CalculatedTick - record->Frames[last].Tick) * ret.PositionDot);
+		ret.Position = baseDegree + ((ret.CalculatedTick - record->Frames[lastMinus[0]].Tick) * ret.PositionDot);
 		while(ret.Position > 360)
 			ret.Position -= 360;
 		ret.PositionDot *= record->TicksPerSecond;
 		ret.Synced = true;
 		return ret;
-	}
-
-	bool Operation_ReluctorGM24x::IsLongPulse(Record<bool> *record, frameindex_t frame)
-	{
-		if(record->Frames[frame].State)
-			frame = Record<bool>::Subtract(frame, 1, record->Length);
-
-		const frameindex_t frameMinus1 = Record<bool>::Subtract(frame, 1, record->Length);
-		const frameindex_t frameMinus2 = Record<bool>::Subtract(frame, 2, record->Length);
-
-		const tick_t deltaPulse = record->Frames[frame].Tick - record->Frames[frameMinus1].Tick;
-		const tick_t delta15degrees = record->Frames[frame].Tick - record->Frames[frameMinus2].Tick;
-
-		return deltaPulse > (delta15degrees / 2);
 	}
 }
 #endif
