@@ -1,7 +1,6 @@
 #include "Operations/Operation_ReluctorGM24x.h"
 #include <algorithm>
 #include <vector>
-#include <cstdio>
 
 using namespace EmbeddedIOServices;
 using namespace OperationArchitecture;
