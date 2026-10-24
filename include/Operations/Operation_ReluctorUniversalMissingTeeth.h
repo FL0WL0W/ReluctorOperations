@@ -23,6 +23,7 @@ namespace ReluctorOperations
 		position_t ToothWidth;
 		uint8_t NumberOfTeeth;
 		uint8_t NumberOfTeethMissing;
+		uint16_t Reserved;
 	};
 
 	class Operation_ReluctorUniversalMissingTeeth : public OperationArchitecture::Operation<ReluctorResult, EmbeddedIOOperations::Record<bool>*, EmbeddedIOServices::tick_t>
