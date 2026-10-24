@@ -15,7 +15,8 @@
                 "CMAKE_C_FLAGS": "-g -Wall",
                 "CMAKE_CXX_FLAGS": "-g -Wall",
                 "CMAKE_ASM_FLAGS": "-g -Wall",
-                "ReluctorOperations_build_tests": true
+                "ReluctorOperations_build_tests": true,
+                "EmbeddedIOServices_build_tests": true
             }
         }
     ]
