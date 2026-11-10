@@ -10,12 +10,10 @@ namespace ReluctorOperations
     extern Operation_ReluctorGM24x Operation_ReluctorGM24xInstance;
 
 	template<uint32_t idOffset>
-	inline std::array<OperationArchitecture::OperationFactoryEntry, 3> RegisterReluctorOperationFactory() {
-    	return std::array<OperationArchitecture::OperationFactoryEntry, 3>{{
-			{ idOffset + 1, [](const void *config, size_t &size){ return static_cast<OperationArchitecture::AbstractOperation *>(&Operation_ReluctorGM24xInstance); } },
-			{ idOffset + 2, Operation_ReluctorUniversal1x::Create },
-			{ idOffset + 3, Operation_ReluctorUniversalMissingTeeth::Create }
-    	}};
-	}
+	constexpr std::array<OperationArchitecture::OperationFactoryEntry, 3> ReluctorOperationFactoryEntries = {{
+		{ idOffset + 1, [](const void *config, size_t &size){ return static_cast<OperationArchitecture::AbstractOperation *>(&Operation_ReluctorGM24xInstance); } },
+		{ idOffset + 2, Operation_ReluctorUniversal1x::Create },
+		{ idOffset + 3, Operation_ReluctorUniversalMissingTeeth::Create }
+	}};
 }
 #endif
